@@ -7,7 +7,8 @@ PKG_SRC_DIR="bash-5.2.37"
 
 pkg_build() {
     # 依赖 ncurses 的头文件与库（已在总 staging 中）
-    export CPPFLAGS="-I$STAGE_DIR$PREFIX/include"
+    # 我们的 ncurses 6.5 构建为 wide 版：头文件在 include/ncursesw，库名 libncursesw
+    export CPPFLAGS="-I$STAGE_DIR$PREFIX/include -I$STAGE_DIR$PREFIX/include/ncursesw"
     export LDFLAGS="$LDFLAGS -L$STAGE_DIR$PREFIX/lib"
 
     # autoconf 交叉缓存变量（bionic/Linux 的已知事实值，避免 configure 尝试运行目标程序）
@@ -25,7 +26,7 @@ pkg_build() {
         bash_cv_func_vsnprintf=yes \
         bash_cv_func_strtod=yes \
         bash_cv_printf_a_format=yes \
-        bash_cv_termcap_lib=libncurses \
+        bash_cv_termcap_lib=libncursesw \
         bash_cv_unusable_rtsigs=no \
         bash_cv_wcontinued_broken=no \
         bash_cv_dup2_broken=no \

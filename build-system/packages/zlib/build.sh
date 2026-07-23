@@ -1,8 +1,9 @@
 # zlib —— 底层压缩库（curl 依赖链第一层）
 PKG_NAME="zlib"
 PKG_VERSION="1.3.1"
-PKG_SRC_URL="https://zlib.net/fossils/zlib-1.3.1.tar.gz"
-PKG_SRC_SHA256="9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23"
+# 用 GitHub 镜像：zlib.net 对云机房 IP 间歇性返回 415（CI 实测）
+PKG_SRC_URL="https://codeload.github.com/madler/zlib/tar.gz/refs/tags/v1.3.1"
+PKG_SRC_SHA256="17e88863f3600672ab49182f217281b6fc4d3c762bde361935e436a95214d05c"
 PKG_SRC_DIR="zlib-1.3.1"
 
 pkg_build() {
