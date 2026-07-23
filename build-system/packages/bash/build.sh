@@ -26,7 +26,7 @@ pkg_build() {
         bash_cv_func_vsnprintf=yes \
         bash_cv_func_strtod=yes \
         bash_cv_printf_a_format=yes \
-        bash_cv_termcap_lib=ncursesw \
+        bash_cv_termcap_lib=ncursesw \   # 优先 -lncursesw；.config 增加的 libncurses.so 兼容 symlink 兜底
         bash_cv_unusable_rtsigs=no \
         bash_cv_wcontinued_broken=no \
         bash_cv_dup2_broken=no \

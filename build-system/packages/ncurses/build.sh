@@ -26,4 +26,6 @@ pkg_build() {
             esac
         done
     fi
+    # 为兼容 bash `--with-curses` / `lncurses` 等硬编码查找，创建兼容符号链接
+    (cd "$PKG_STAGE$PREFIX/lib" && ln -sf libncursesw.so libncurses.so && ln -sf libncursesw.so libncurses.so.6) || true
 }
