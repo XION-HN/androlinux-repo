@@ -26,7 +26,7 @@ pkg_build() {
         bash_cv_func_vsnprintf=yes \
         bash_cv_func_strtod=yes \
         bash_cv_printf_a_format=yes \
-        bash_cv_termcap_lib=libncursesw \
+        bash_cv_termcap_lib=ncursesw \
         bash_cv_unusable_rtsigs=no \
         bash_cv_wcontinued_broken=no \
         bash_cv_dup2_broken=no \
