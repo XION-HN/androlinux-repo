@@ -1,0 +1,37 @@
+// 本模块 vendored 自 termux-app @ 3df69d1（Apache License 2.0，详见 src 内文件头与 LICENSES/）
+// build.gradle 已按 AndroLinux 工程需求重写（去除 termux 发布配置）
+plugins { id 'com.android.library' }
+
+android {
+    namespace 'com.termux.emulator'
+    compileSdk 36
+    ndkVersion '29.0.14206865'
+
+    defaultConfig {
+        minSdk 28
+        targetSdk 28
+        ndk { abiFilters 'arm64-v8a' }
+        externalNativeBuild {
+            ndkBuild {
+                // 去除原 -Werror（避免 NDK 版本差异导致失败），追加 16KB 页对齐
+                cFlags '-std=c11', '-Wall', '-Os', '-fno-stack-protector',
+                       '-Wl,--gc-sections', '-Wl,-z,max-page-size=16384'
+            }
+        }
+    }
+
+    externalNativeBuild {
+        ndkBuild { path 'src/main/jni/Android.mk' }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint { abortOnError false }
+
+    dependencies {
+        implementation 'androidx.annotation:annotation:1.9.0'
+    }
+}

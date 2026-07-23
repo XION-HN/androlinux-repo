@@ -1,0 +1,26 @@
+package com.androlinux.app;
+
+import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+
+public class App extends Application {
+
+    public static final String CHANNEL_SESSION = "session";
+
+    /** Linux 环境前缀（编译期写死于所有二进制中，必须与 build-system/config.sh 一致） */
+    public static final String PREFIX = "/data/data/com.androlinux.app/files/usr";
+    public static final String HOME_PATH = "/data/data/com.androlinux.app/files/home";
+    public static final String BOOTSTRAP_ASSET = "bootstrap/bootstrap-arm64-v8a.zip";
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationManager nm = getSystemService(NotificationManager.class);
+            nm.createNotificationChannel(new NotificationChannel(
+                CHANNEL_SESSION, "终端会话", NotificationManager.IMPORTANCE_LOW));
+        }
+    }
+}

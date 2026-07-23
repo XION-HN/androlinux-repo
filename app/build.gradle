@@ -1,0 +1,35 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.androlinux.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.androlinux.app'
+        // minSdk 28: demo 设备矩阵为 Android 12+，与构建系统 API_LEVEL 对齐
+        minSdk 28
+        // targetSdk 28: Bionic 路线的生死线——Android 10+ 禁止从私有目录 exec
+        targetSdk 28
+        versionCode 1
+        versionName '0.1.0-demo'
+    }
+
+    buildTypes {
+        debug { minifyEnabled false }
+        release { minifyEnabled false }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // targetSdk=28 会触发 ExpiredTargetSdkVersion 等告警，demo 阶段不阻断构建
+    lint { abortOnError false }
+
+    dependencies {
+        implementation project(':terminal-view')
+        implementation project(':terminal-emulator')
+        implementation 'androidx.annotation:annotation:1.9.0'
+    }
+}
