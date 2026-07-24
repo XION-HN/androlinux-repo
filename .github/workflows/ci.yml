@@ -6,7 +6,7 @@ on:
 
 jobs:
   # -----------------------------------------------------------
-  # 交叉编译：NDK r29 构建 7 个包 → bootstrap zip + 单包 tar.gz
+  # 交叉编译：NDK r29 构建 13 个包（含 Python 3.13 + pip）→ bootstrap zip + 单包 tar.gz
   # prod = 正式 prefix（打进 APK）；test = Termux 冒烟 prefix
   # -----------------------------------------------------------
   bootstrap:
