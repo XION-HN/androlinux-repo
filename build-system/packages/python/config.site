@@ -18,9 +18,13 @@ ac_cv_func_sem_timedwait=yes
 ac_cv_func_sem_getvalue=yes
 ac_cv_func_sem_unlink=yes
 
-# POSIX 共享内存（Bionic API 21+ 提供）
-ac_cv_func_shm_open=yes
-ac_cv_func_shm_unlink=yes
+# POSIX 共享内存
+# Bionic 头文件 <sys/mman.h> 在交叉编译时不声明 shm_open/shm_unlink
+# （__INTRODUCED_IN 宏在 cross-build 下可见性受限），强行声明 yes 会导致
+# Modules/_multiprocessing/posixshmem.c 编译报 "undeclared function"。
+# 设为 no 跳过 posixshmem 扩展，核心 multiprocessing 仍可走 pipe/fork。
+ac_cv_func_shm_open=no
+ac_cv_func_shm_unlink=no
 
 # tzset 可用
 ac_cv_working_tzset=yes
