@@ -1,0 +1,21 @@
+# bzip2 —— 块排序压缩库（Python _bz2 模块依赖）
+PKG_NAME="bzip2"
+PKG_VERSION="1.0.8"
+PKG_SRC_URL="https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
+PKG_SRC_SHA256="ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269"
+PKG_SRC_DIR="bzip2-1.0.8"
+
+pkg_build() {
+    # bzip2 无 autoconf，用裸 Makefile；需手动构建共享库
+    # 1) 共享库（Makefile-libbz2_so 产出 libbz2.so.1.0.8）
+    make -f Makefile-libbz2_so CC="$CC" CFLAGS="$CFLAGS" -j"$JOBS"
+    # 2) 静态库 + 命令行工具
+    make CC="$CC" CFLAGS="$CFLAGS" -j"$JOBS"
+    # 安装静态库 + 头文件 + 工具
+    make install PREFIX="$PKG_STAGE$PREFIX"
+    # 手动安装共享库 + soname 符号链接（make install 不装 .so）
+    local libdir="$PKG_STAGE$PREFIX/lib"
+    cp -f libbz2.so.1.0.8 "$libdir/"
+    ln -sf libbz2.so.1.0.8 "$libdir/libbz2.so.1"
+    ln -sf libbz2.so.1.0.8 "$libdir/libbz2.so"
+}

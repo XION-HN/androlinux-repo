@@ -15,7 +15,8 @@ source "$BS_ROOT/config.sh"
 source "$BS_ROOT/lib/common.sh"
 
 # 包名列表（构建顺序即依赖顺序）
-ALL_PACKAGES="zlib ncurses bash openssl ca-certificates curl toybox"
+ALL_PACKAGES="zlib ncurses bash openssl ca-certificates curl toybox \
+              libffi sqlite bzip2 xz expat readline python"
 
 pkg_deps() {
     case "$1" in
@@ -26,6 +27,13 @@ pkg_deps() {
         ca-certificates) echo "" ;;
         curl)            echo "zlib openssl ca-certificates" ;;
         toybox)          echo "" ;;
+        libffi)          echo "" ;;
+        sqlite)          echo "" ;;
+        bzip2)           echo "" ;;
+        xz)              echo "" ;;
+        expat)           echo "" ;;
+        readline)        echo "ncurses" ;;
+        python)          echo "zlib openssl ncurses readline libffi sqlite bzip2 xz expat" ;;
         *) die "未知包: $1" ;;
     esac
 }
