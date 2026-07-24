@@ -16,9 +16,14 @@ pkg_build() {
     # CPython 3.11+ 交叉编译要求 --with-build-python 指向同版本的 native python；
     # 用 out-of-tree build 在 build-host/ 子目录里只构建解释器二进制（make python
     # 不含扩展模块，不依赖宿主的 libssl-dev / libbz2-dev 等开发头文件）。
+    # 关键：工具链脚本已把 CC/CXX/CFLAGS/LDFLAGS 设为 aarch64 交叉值，
+    # 宿主构建必须覆盖回系统默认编译器（cc/gcc），否则 configure 报
+    # "cannot run C compiled programs"（aarch64 二进制无法在 x86_64 执行）。
     local host_build="$srcdir/build-host"
     rm -rf "$host_build"; mkdir -p "$host_build"
-    ( cd "$host_build" && ../configure --without-ensurepip --without-pymalloc \
+    ( cd "$host_build" && \
+        CC=cc CXX=c++ CFLAGS="-O2" CXXFLAGS="-O2" LDFLAGS= CPPFLAGS= \
+        ../configure --without-ensurepip --without-pymalloc \
         && make -j"$JOBS" python )
     local host_python="$host_build/python"
     [ -x "$host_python" ] || die "宿主 Python 构建失败"
@@ -67,7 +72,7 @@ pkg_build() {
 
     # pip 入口脚本（shebang 指向目标设备上的 python3.13）
     local pip_bin="$PKG_STAGE$PREFIX/bin"
-    local pip_name="pip${PKG_VERSION#3.}"   # pip3.13
+    local pip_name="pip${PKG_VERSION%.*}"   # pip3.13（去掉末尾 patch 版本号）
     cat > "$pip_bin/$pip_name" << PIP_EOF
 #!$PREFIX/bin/$pyver
 import sys
