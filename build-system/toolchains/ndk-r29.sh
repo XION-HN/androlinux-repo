@@ -24,5 +24,10 @@ export PKG_CONFIG_PATH="$STAGE_DIR$PREFIX/lib/pkgconfig"
 export ANDROID_NDK_HOME="$_ndk"
 export OPENSSL_TARGET="android-arm64"
 
+# NDK r29 已移除 GCC 包装器；OpenSSL 等构建系统的 android-* 目标仍会探测
+# aarch64-linux-android-gcc → 创建兼容 symlink 指向 NDK clang。
+ln -sf "$CC" "$HOST_PREBUILT/bin/aarch64-linux-android-gcc"
+ln -sf "$CXX" "$HOST_PREBUILT/bin/aarch64-linux-android-g++"
+
 log "工具链: NDK ($(basename "$_ndk")) @ $HOST_PREBUILT"
 $CC --version | head -1

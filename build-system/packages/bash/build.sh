@@ -32,7 +32,8 @@ pkg_build() {
         bash_cv_dup2_broken=no \
         bash_cv_pgrp_pipe=yes \
         bash_cv_must_reinstall_sighandlers=no \
-        ac_cv_func_setvbuf_reversed=no
+        ac_cv_func_setvbuf_reversed=no \
+        ac_cv_header_libintl_h=no
     make -j"$JOBS"
     stage_install
 }
