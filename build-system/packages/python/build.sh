@@ -87,4 +87,9 @@ PIP_EOF
     chmod +x "$pip_bin/$pip_name"
     ln -sf "$pip_name" "$pip_bin/pip3"
     ln -sf "$pip_name" "$pip_bin/pip"
+
+    # python3 → python3.13（CPython make install 默认会建该链接，但本脚本对
+    # make install 做了容错兜底，若 compileall 中断可能缺失。显式补一个确保
+    # python3 始终可用，避免设备上 `python3` 找不到。）
+    ln -sf "$pyver" "$pip_bin/python3"
 }

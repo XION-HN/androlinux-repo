@@ -17,7 +17,7 @@ public class SettingsActivity extends Activity {
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private TextView mDeviceInfo;
     private TextView mExecOutput;
-    private String mLastExecResult = "";
+    private final StringBuilder mDiagLog = new StringBuilder();   // 累积各次自检结果，供一键复制
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,13 @@ public class SettingsActivity extends Activity {
         mDeviceInfo.setText(Diagnostics.collectBasic(this));
 
         Button btnExec = findViewById(R.id.btn_exec_test);
-        btnExec.setOnClickListener(v -> runExecTest());
+        btnExec.setOnClickListener(v -> runTest("exec 自检", Diagnostics::execSelfTest));
+
+        Button btnPython = findViewById(R.id.btn_python_test);
+        btnPython.setOnClickListener(v -> runTest("Python 自检", Diagnostics::pythonSelfTest));
+
+        Button btnPip = findViewById(R.id.btn_pip_test);
+        btnPip.setOnClickListener(v -> runTest("pip 自检", Diagnostics::pipSelfTest));
 
         Button btnPhantom = findViewById(R.id.btn_phantom_test);
         btnPhantom.setOnClickListener(v -> runInBackground(
@@ -47,18 +53,19 @@ public class SettingsActivity extends Activity {
 
         Button btnCopyDiag = findViewById(R.id.btn_copy_diag);
         btnCopyDiag.setOnClickListener(v -> {
-            String all = Diagnostics.collectBasic(this)
-                + "\n--- exec 自检 ---\n" + mLastExecResult;
+            String all = Diagnostics.collectBasic(this) + "\n" + mDiagLog.toString();
             copyToClipboard("diagnostics", all);
         });
     }
 
-    private void runExecTest() {
+    /** 通用自检运行器：后台执行，结果累积进 mDiagLog（供复制），最新结果显示在输出区。 */
+    private void runTest(String title, Task task) {
         mExecOutput.setVisibility(View.VISIBLE);
-        mExecOutput.setText("运行中…");
-        runInBackground(Diagnostics::execSelfTest, result -> {
-            mLastExecResult = result;
-            mExecOutput.setText(result);
+        mExecOutput.setText(title + " 运行中…");
+        runInBackground(task, result -> {
+            String entry = "--- " + title + " ---\n" + (result.isEmpty() ? "(无输出)" : result);
+            mDiagLog.append(entry).append("\n\n");
+            mExecOutput.setText(result.isEmpty() ? "(无输出)" : result);
         });
     }
 

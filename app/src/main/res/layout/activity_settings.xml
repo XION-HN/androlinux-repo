@@ -49,6 +49,20 @@
             android:visibility="gone" />
 
         <Button
+            android:id="@+id/btn_python_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Python 自检（import 核心模块）" />
+
+        <Button
+            android:id="@+id/btn_pip_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="pip 自检（--version）" />
+
+        <Button
             android:id="@+id/btn_phantom_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
