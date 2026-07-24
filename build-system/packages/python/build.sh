@@ -61,14 +61,18 @@ pkg_build() {
     }
 
     # ---- 5. 手动安装 pip（交叉编译不能用 ensurepip）----
-    # CPython 源码树 Lib/ensurepip/_bundled/ 内含 pip wheel，直接解压到 site-packages
+    # CPython 源码树 Lib/ensurepip/_bundled/ 内含 pip wheel，直接解压到 site-packages。
+    # 注意：解压需用 zipfile 模块，而 zipfile 依赖 C 扩展 binascii；宿主 python
+    # 仅以 `make python` 构建（无 C 扩展），无法 import binascii。改用系统 python3
+    # （CI runner / 开发机均预装，含完整 C 扩展）提取 wheel。.whl 本质是 zip，
+    # 与解释器版本无关。
     local pyver="python${PKG_VERSION%.*}"   # python3.13
     local pydir="$PKG_STAGE$PREFIX/lib/$pyver"
     mkdir -p "$pydir/site-packages"
     local wheel
     wheel=$(ls "$srcdir/Lib/ensurepip/_bundled/pip-"*.whl 2>/dev/null | head -1)
     [ -n "$wheel" ] || die "未找到 pip wheel"
-    "$host_python" -m zipfile -e "$wheel" "$pydir/site-packages/"
+    python3 -m zipfile -e "$wheel" "$pydir/site-packages/"
 
     # pip 入口脚本（shebang 指向目标设备上的 python3.13）
     local pip_bin="$PKG_STAGE$PREFIX/bin"
