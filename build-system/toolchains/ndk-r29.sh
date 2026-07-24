@@ -20,8 +20,12 @@ export CXXFLAGS="$COMMON_CFLAGS"
 export LDFLAGS="$COMMON_LDFLAGS"
 export PKG_CONFIG_PATH="$STAGE_DIR$PREFIX/lib/pkgconfig"
 
-# openssl 的 android-arm64 target 依赖此变量推导工具链
+# OpenSSL 的 android-* target 读 ANDROID_NDK_ROOT（非 ANDROID_NDK_HOME）定位 NDK；
+# ubuntu runner 镜像预装了旧版 NDK 并把 ANDROID_NDK_ROOT 指向它，会导致 openssl
+# 用错 NDK 路径、找不到 r29 的 clang/gcc。三个变量统一指向我们安装的 NDK 版本。
 export ANDROID_NDK_HOME="$_ndk"
+export ANDROID_NDK_ROOT="$_ndk"
+export ANDROID_NDK="$_ndk"
 export OPENSSL_TARGET="android-arm64"
 
 # NDK r29 已移除 GCC 包装器；OpenSSL 等构建系统的 android-* 目标仍会探测
