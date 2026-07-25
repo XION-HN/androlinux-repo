@@ -67,6 +67,8 @@ public final class Diagnostics {
             "PATH=" + App.PREFIX + "/bin",
             "TMPDIR=" + App.PREFIX + "/tmp",
             "LANG=C.UTF-8",
+            "LD_LIBRARY_PATH=" + App.PREFIX + "/lib",
+            "PYTHON_BASIC_REPL=1",
         };
     }
 

@@ -100,7 +100,16 @@ public class MainActivity extends Activity {
             "PREFIX=" + App.PREFIX,
             "PATH=" + App.PREFIX + "/bin",
             "TMPDIR=" + App.PREFIX + "/tmp",
-            "LANG=C.UTF-8"
+            "LANG=C.UTF-8",
+            // C 扩展（_bz2/_ssl 等）与非链接依赖（ctypes find_library）运行时
+            // 需在 $PREFIX/lib 解析 .so；Android 无 ldconfig，显式指定最稳。
+            "LD_LIBRARY_PATH=" + App.PREFIX + "/lib",
+            // CPython 3.13 默认 pyrepl 依赖 _minimal_curses，而后者用
+            // ctypes.util.find_library 查 ncurses——Android Bionic 无 ldconfig，
+            // find_library 返回 None 致导入失败，REPL 报 warning 并回退。
+            // 直接用经典 REPL（CPython 官方变量），消除 warning 且 Android
+            // 终端下经典 REPL 兼容性更稳。
+            "PYTHON_BASIC_REPL=1"
         };
     }
 
