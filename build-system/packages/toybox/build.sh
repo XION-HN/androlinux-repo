@@ -15,6 +15,50 @@ pkg_build() {
         sed -i "s/^CONFIG_${opt}=y/# CONFIG_${opt} is not set/" .config
     done
     make -j"$JOBS" CC="$CC" STRIP="$STRIP"
-    # install 目标会在 $PREFIX/bin 下创建 toybox 及各命令符号链接
-    make install PREFIX="$PKG_STAGE$PREFIX"
+
+    # toybox 的 make install 会运行 ./toybox --install 创建命令符号链接，
+    # 但交叉编译产物是 aarch64 二进制，在 x86_64 CI runner 上无法执行
+    # （Exec format error），符号链接静默缺失。设备上 wc/head/cat 等全部
+    # command not found。改用手动安装：复制二进制 + 从 .config 提取启用的
+    # 命令列表，逐个创建符号链接。
+    local bindir="$PKG_STAGE$PREFIX/bin"
+    mkdir -p "$bindir"
+    install -m 755 toybox "$bindir/toybox"
+
+    # 从 .config 提取启用的命令：CONFIG_<CMD>=y → 命令名（小写）
+    # toybox 的命令名是 CONFIG 名转小写，如 CONFIG_WC → wc, CONFIG_HEAD → head
+    local cmd_count=0
+    while IFS='=' read -r key val; do
+        [ "$val" = "y" ] || continue
+        case "$key" in
+            CONFIG_*)
+                # 去掉 CONFIG_ 前缀，转小写得命令名
+                local cmd=$(echo "${key#CONFIG_}" | tr '[:upper:]' '[:lower:]')
+                # 跳过非命令配置项（如 CONFIG_TOYBOX、CONFIG_TOYBOX_FORK 等）
+                case "$cmd" in
+                    toybox*|host*) continue ;;
+                esac
+                ln -sf toybox "$bindir/$cmd"
+                cmd_count=$((cmd_count + 1))
+                ;;
+        esac
+    done < .config
+    log "  toybox: 手动创建 $cmd_count 个命令符号链接"
+
+    verify_commands
+}
+
+# 校验关键命令符号链接存在，CI 阶段暴露安装问题
+verify_commands() {
+    local bindir="$PKG_STAGE$PREFIX/bin"
+    # 用户最常用的命令——任一缺失说明安装流程有问题
+    local required="wc head cat grep sed awk ls cp mv rm mkdir rmdir touch sort uniq tr cut date du df ps kill sleep echo printf pwd env true false"
+    local missing=""
+    for cmd in $required; do
+        [ -e "$bindir/$cmd" ] || missing="$missing $cmd"
+    done
+    if [ -n "$missing" ]; then
+        die "toybox 命令符号链接缺失:$missing——设备上会 command not found"
+    fi
+    log "  命令校验通过：关键命令符号链接均存在"
 }
