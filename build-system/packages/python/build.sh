@@ -102,22 +102,26 @@ PIP_EOF
 
 # 扫描 lib-dynload/*.so 的 NEEDED，核对每个由本项目打包的库都能在 $PREFIX/lib 解析。
 verify_dynload_needed() {
+    # C 扩展在 python 私有 staging（PKG_STAGE），但其依赖库（libssl/libbz2 等）
+    # 由其他包提供，已合并到总 STAGE_DIR。必须检查总 STAGE_DIR，否则全部误报缺失。
     local dynload="$PKG_STAGE$PREFIX/lib/python${PKG_VERSION%.*}/lib-dynload"
-    local libdir="$PKG_STAGE$PREFIX/lib"
+    local libdir="$STAGE_DIR$PREFIX/lib"
     [ -d "$dynload" ] || { warn "lib-dynload 不存在，跳过 NEEDED 校验"; return; }
 
     # Bionic 自带系统库（不打包），过滤掉
     local sys_libs='libdl\.so|liblog\.so|libm\.so|libc\.so|libdl|librt|libpthread'
 
     local missing=0
+    local pylibdir="$PKG_STAGE$PREFIX/lib"   # libpython*.so 在此（尚未合并到总 STAGE_DIR）
     while IFS= read -r so; do
         # llvm-readelf -d 输出形如: 0x00000001 (NEEDED) Shared library: [libbz2.so.1.0]
         local needed
         needed=$("$READELF" -d "$so" 2>/dev/null | sed -n 's/.*NEEDED.*\[\([^]]*\)\].*/\1/p')
         for lib in $needed; do
-            # 跳过系统库与 Python 自身（libpython 在 lib/，也会被解析到）
+            # 跳过 Bionic 系统库（设备 /system/lib64 提供）
             echo "$lib" | grep -qE "^($sys_libs)" && continue
-            [ -e "$libdir/$lib" ] || {
+            # 依赖库可能在总 STAGE_DIR（其他包）或 python 私有 staging（libpython）
+            [ -e "$libdir/$lib" ] || [ -e "$pylibdir/$lib" ] || {
                 warn "  $(basename "$so") 依赖 $lib，但 $PREFIX/lib/$lib 不存在"
                 missing=$((missing + 1))
             }
