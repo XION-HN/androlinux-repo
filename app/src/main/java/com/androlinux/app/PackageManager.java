@@ -49,18 +49,16 @@ public final class PackageManager {
     private static final String RELEASE_REPO_OWNER = "XION-HN";
     private static final String RELEASE_REPO_NAME  = "androlinux-repo";
 
-    /** 仓库 API：查最新 release 的 tag 名。App 运行时动态获取 latest tag，
-     *  避免硬编码 tag 名（每发新 release 要改代码）。
-     *  GitHub 的 "latest" 别名只在 API 层生效，下载 URL 路径必须是真实 tag 名。 */
-    private static final String REPO_API_LATEST =
-        "https://api.github.com/repos/" + RELEASE_REPO_OWNER + "/" + RELEASE_REPO_NAME + "/releases/latest";
-
-    /** packages.json 在 release 资产里的下载 URL 模板（占位符 %s = tag 名） */
-    private static final String INDEX_URL_TEMPLATE =
-        "https://github.com/" + RELEASE_REPO_OWNER + "/" + RELEASE_REPO_NAME + "/releases/download/%s/packages.json";
-
-    /** 缓存最新 tag 名，避免每次拉索引都查一次 API */
-    private static volatile String sCachedLatestTag;
+    /** packages.json 的下载 URL。
+     *  用 GitHub Releases 的 latest/download/ 固定路径，自动 302 重定向到最新 release
+     *  的 packages.json。相比调 GitHub API 查 tag 再拼 URL 的方案，此路径：
+     *    - 无需 token（公开仓库资产下载通道）
+     *    - 无 API 速率限制（未认证 API 仅 60 次/小时，多设备共享 IP 易耗尽）
+     *    - 自动跟随最新 release，发新版无需改代码
+     *  每个包的 tar.gz 下载 URL 由 packages.json 内的 download_url 字段提供，
+     *  其中已含真实 tag 名，保证 sha256 校验与索引一致。 */
+    private static final String INDEX_URL =
+        "https://github.com/" + RELEASE_REPO_OWNER + "/" + RELEASE_REPO_NAME + "/releases/latest/download/packages.json";
 
     /** 已安装包记录目录：$PREFIX/var/installed/<name> 内容为版本号 */
     private static final String INSTALLED_DIR = App.PREFIX + "/var/installed";
@@ -125,24 +123,18 @@ public final class PackageManager {
         }, "pkg-fetch").start();
     }
 
-    /** 同步拉取并解析索引 */
+    /** 同步拉取并解析索引。
+     *  直接用 INDEX_URL（latest/download/ 固定路径），HttpURLConnection 默认
+     *  followRedirects=true，会自动跟随 GitHub 的 302 到真实资产 URL。 */
     static List<PackageInfo> fetchIndexSync() throws Exception {
-        // 1. 查最新 release tag（缓存命中则跳过 API 调用）
-        String tag = sCachedLatestTag;
-        if (tag == null) {
-            tag = fetchLatestReleaseTag();
-            sCachedLatestTag = tag;
-        }
-        // 2. 拼 packages.json 的下载 URL 并拉取
-        String indexUrl = String.format(INDEX_URL_TEMPLATE, tag);
-        URL url = new URL(indexUrl);
+        URL url = new URL(INDEX_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(15000);
         conn.setReadTimeout(30000);
         conn.setRequestProperty("User-Agent", "AndroLinux-PackageManager");
         try {
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("HTTP " + conn.getResponseCode() + " 取索引失败: " + indexUrl);
+                throw new RuntimeException("HTTP " + conn.getResponseCode() + " 取索引失败: " + INDEX_URL);
             }
             StringBuilder sb = new StringBuilder();
             try (BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
@@ -156,34 +148,6 @@ public final class PackageManager {
                 pkgs.add(new PackageInfo(arr.getJSONObject(i)));
             }
             return pkgs;
-        } finally {
-            conn.disconnect();
-        }
-    }
-
-    /** 调 GitHub API 查最新 release 的 tag 名 */
-    private static String fetchLatestReleaseTag() throws Exception {
-        URL url = new URL(REPO_API_LATEST);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(15000);
-        conn.setReadTimeout(15000);
-        conn.setRequestProperty("User-Agent", "AndroLinux-PackageManager");
-        conn.setRequestProperty("Accept", "application/vnd.github+json");
-        try {
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("HTTP " + conn.getResponseCode() + " 查 latest release 失败");
-            }
-            StringBuilder sb = new StringBuilder();
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                String line;
-                while ((line = r.readLine()) != null) sb.append(line).append('\n');
-            }
-            JSONObject root = new JSONObject(sb.toString());
-            String tag = root.getString("tag_name");
-            if (tag == null || tag.isEmpty()) {
-                throw new RuntimeException("API 返回的 tag_name 为空");
-            }
-            return tag;
         } finally {
             conn.disconnect();
         }
