@@ -102,6 +102,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             pw.println("--- logcat (最近 800 行) ---");
             pw.print(dumpLogcat(800));
             pw.println();
+        } catch (IOException ignored) {
+            // FileWriter 失败（外部存储未挂载/权限问题）则跳过主报告，
+            // 下方 logcat 文件仍尝试写一份。
         }
 
         // logcat 单独存全量一份，便于排查非崩溃线程的输出
