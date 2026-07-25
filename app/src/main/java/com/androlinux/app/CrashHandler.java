@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Process;
 import android.os.StatFs;
 
 import java.io.File;
@@ -56,8 +55,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             pw.println();
 
             pw.println("--- 进程/线程 ---");
-            pw.println("PID: " + Process.myPid());
-            pw.println("UID: " + Process.myUid());
+            pw.println("PID: " + android.os.Process.myPid());
+            pw.println("UID: " + android.os.Process.myUid());
             pw.println("TID: " + t.getId());
             pw.println("Thread: " + t.getName());
             pw.println("Thread state: " + t.getState());
