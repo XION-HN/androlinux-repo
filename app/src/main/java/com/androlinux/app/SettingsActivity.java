@@ -1,14 +1,18 @@
 package com.androlinux.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +21,7 @@ public class SettingsActivity extends Activity {
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private TextView mDeviceInfo;
     private TextView mExecOutput;
+    private TextView mPkgOutput;
     private final StringBuilder mDiagLog = new StringBuilder();   // 累积各次自检结果，供一键复制
 
     @Override
@@ -86,6 +91,81 @@ public class SettingsActivity extends Activity {
         btnCopyDiag.setOnClickListener(v -> {
             String all = Diagnostics.collectBasic(this) + "\n" + mDiagLog.toString();
             copyToClipboard("diagnostics", all);
+        });
+
+        // ---- 包管理器 ----
+        mPkgOutput = findViewById(R.id.pkg_index_output);
+        // 缓存最近一次拉取的索引，供安装时按名查找
+        final java.util.List<PackageManager.PackageInfo>[] indexHolder = new java.util.List[]{null};
+
+        Button btnRefreshIndex = findViewById(R.id.btn_refresh_index);
+        btnRefreshIndex.setOnClickListener(v -> {
+            mPkgOutput.setVisibility(View.VISIBLE);
+            mPkgOutput.setText("拉取索引中…");
+            PackageManager.fetchIndex(new PackageManager.Callback() {
+                @Override public void onProgress(String msg) { }
+                @Override public void onSuccess(String summary) {
+                    mPkgOutput.setText(summary);
+                    try {
+                        indexHolder[0] = PackageManager.fetchIndexSync();
+                    } catch (Exception e) {
+                        indexHolder[0] = null;
+                    }
+                }
+                @Override public void onError(String message) {
+                    mPkgOutput.setText("拉取失败: " + message);
+                }
+            });
+        });
+
+        Button btnInstallPkg = findViewById(R.id.btn_install_pkg);
+        btnInstallPkg.setOnClickListener(v -> showInstallDialog(indexHolder));
+    }
+
+    /** 弹出输入框让用户输入包名，从缓存的索引中查找后调用安装 */
+    private void showInstallDialog(final java.util.List<PackageManager.PackageInfo>[] indexHolder) {
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("包名，如 python");
+        new AlertDialog.Builder(this)
+            .setTitle("安装包")
+            .setView(input)
+            .setPositiveButton("安装", (DialogInterface d, int w) -> {
+                String name = input.getText().toString().trim();
+                if (name.isEmpty()) return;
+                installByName(name, indexHolder[0]);
+            })
+            .setNegativeButton("取消", null)
+            .show();
+    }
+
+    private void installByName(String name, java.util.List<PackageManager.PackageInfo> index) {
+        if (index == null) {
+            Toast.makeText(this, "请先刷新索引", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        PackageManager.PackageInfo target = null;
+        for (PackageManager.PackageInfo p : index) {
+            if (p.name.equals(name)) { target = p; break; }
+        }
+        if (target == null) {
+            Toast.makeText(this, "索引中找不到包: " + name, Toast.LENGTH_LONG).show();
+            return;
+        }
+        mPkgOutput.setVisibility(View.VISIBLE);
+        mPkgOutput.setText("准备安装 " + target.getDisplayName() + " …");
+        PackageManager.installPackage(this, target, new PackageManager.Callback() {
+            @Override public void onProgress(String msg) {
+                mPkgOutput.setText(msg);
+            }
+            @Override public void onSuccess(String summary) {
+                mPkgOutput.setText(summary);
+                Toast.makeText(SettingsActivity.this, "安装完成", Toast.LENGTH_SHORT).show();
+            }
+            @Override public void onError(String message) {
+                mPkgOutput.setText("安装失败: " + message);
+                Toast.makeText(SettingsActivity.this, "安装失败", Toast.LENGTH_LONG).show();
+            }
         });
     }
 

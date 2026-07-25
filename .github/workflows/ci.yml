@@ -2,11 +2,15 @@ name: ci
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
   # -----------------------------------------------------------
-  # 交叉编译：NDK r29 构建 13 个包（含 Python 3.13 + pip）→ bootstrap zip + 单包 tar.gz
+  # 交叉编译：NDK r29 构建 14 个包（含 Python 3.13 + pip）→ bootstrap zip + 单包 tar.gz + packages.json
   # prod = 正式 prefix（打进 APK）；test = Termux 冒烟 prefix
   # -----------------------------------------------------------
   bootstrap:
@@ -36,6 +40,15 @@ jobs:
           ./build.sh build all
           ./make-bootstrap.sh
 
+      - name: Generate packages index (prod only)
+        if: matrix.variant == 'prod'
+        env:
+          # tag 触发时用真实 tag；push 触发时用 latest 占位（仅作 artifact 上传）
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cd build-system
+          ./make-packages-index.sh
+
       - name: Upload bootstrap artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -43,7 +56,37 @@ jobs:
           path: |
             build-system/dist/*.zip
             build-system/dist/packages/*.tar.gz
+            build-system/dist/packages.json
           retention-days: 30
+
+  # -----------------------------------------------------------
+  # Release：打 tag 时上传 tar.gz + packages.json 到 GitHub Releases
+  # App 侧 PackageManager 通过 packages.json 发现并下载包
+  # -----------------------------------------------------------
+  release:
+    needs: bootstrap
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download prod artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: bootstrap-prod
+          path: /tmp/bootstrap-prod
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            /tmp/bootstrap-prod/packages.json
+            /tmp/bootstrap-prod/packages/*.tar.gz
+          generate_release_notes: true
+          fail_on_unmatched_files: true
 
   # -----------------------------------------------------------
   # APK：注入 prod bootstrap 资产 → assembleDebug（侧载分发）
