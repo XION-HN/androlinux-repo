@@ -92,4 +92,40 @@ PIP_EOF
     # make install 做了容错兜底，若 compileall 中断可能缺失。显式补一个确保
     # python3 始终可用，避免设备上 `python3` 找不到。）
     ln -sf "$pyver" "$pip_bin/python3"
+
+    # ---- 6. 校验 C 扩展的 NEEDED 库在 lib/ 均可解析 ----
+    # 交叉编译时 C 扩展（lib-dynload/*.so）的 NEEDED 记录的是依赖库的 soname
+    # （如 libbz2.so.1.0、libssl.so.3），若打包时只建了 .so / .so.1 链接而漏掉
+    # soname 名，设备上 import 会 dlopen 失败。CI 阶段扫描提前暴露此类问题。
+    verify_dynload_needed
+}
+
+# 扫描 lib-dynload/*.so 的 NEEDED，核对每个由本项目打包的库都能在 $PREFIX/lib 解析。
+verify_dynload_needed() {
+    local dynload="$PKG_STAGE$PREFIX/lib/python${PKG_VERSION%.*}/lib-dynload"
+    local libdir="$PKG_STAGE$PREFIX/lib"
+    [ -d "$dynload" ] || { warn "lib-dynload 不存在，跳过 NEEDED 校验"; return; }
+
+    # Bionic 自带系统库（不打包），过滤掉
+    local sys_libs='libdl\.so|liblog\.so|libm\.so|libc\.so|libdl|librt|libpthread'
+
+    local missing=0
+    while IFS= read -r so; do
+        # llvm-readelf -d 输出形如: 0x00000001 (NEEDED) Shared library: [libbz2.so.1.0]
+        local needed
+        needed=$("$READELF" -d "$so" 2>/dev/null | sed -n 's/.*NEEDED.*\[\([^]]*\)\].*/\1/p')
+        for lib in $needed; do
+            # 跳过系统库与 Python 自身（libpython 在 lib/，也会被解析到）
+            echo "$lib" | grep -qE "^($sys_libs)" && continue
+            [ -e "$libdir/$lib" ] || {
+                warn "  $(basename "$so") 依赖 $lib，但 $PREFIX/lib/$lib 不存在"
+                missing=$((missing + 1))
+            }
+        done
+    done < <(find "$dynload" -name '*.so')
+
+    if [ "$missing" -gt 0 ]; then
+        die "发现 $missing 处 NEEDED 库缺失，设备上 import 对应模块会 dlopen 失败"
+    fi
+    log "  NEEDED 校验通过：lib-dynload/*.so 的依赖库在 lib/ 均可解析"
 }

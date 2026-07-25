@@ -16,8 +16,13 @@ pkg_build() {
     # 安装静态库 + 头文件 + 工具
     make install PREFIX="$PKG_STAGE$PREFIX"
     # 手动安装共享库 + soname 符号链接（make install 不装 .so）
+    # bzip2 1.0.8 的 soname 是 libbz2.so.1.0（Makefile-libbz2_so 用
+    # -Wl,-soname,libbz2.so.1.0 链接），实际文件名是 libbz2.so.1.0.8。
+    # 链接 _bz2.so 时 NEEDED 记录的是 soname（libbz2.so.1.0），必须建该名
+    # 的符号链接，否则设备上 dlopen _bz2.so 报 "libbz2.so.1.0 not found"。
     local libdir="$PKG_STAGE$PREFIX/lib"
     cp -f libbz2.so.1.0.8 "$libdir/"
+    ln -sf libbz2.so.1.0.8 "$libdir/libbz2.so.1.0"
     ln -sf libbz2.so.1.0.8 "$libdir/libbz2.so.1"
     ln -sf libbz2.so.1.0.8 "$libdir/libbz2.so"
 }
