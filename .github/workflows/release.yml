@@ -32,7 +32,7 @@ jobs:
         with:
           # 跨仓库下载：指定源仓库 + run_id + token
           repository: ${{ github.event.client_payload.source_repo }}
-          run_id: ${{ github.event.client_payload.source_run_id }}
+          run-id: ${{ github.event.client_payload.source_run_id }}
           name: bootstrap-prod
           path: /tmp/bootstrap-prod
           github-token: ${{ secrets.PRIVATE_REPO_TOKEN }}
