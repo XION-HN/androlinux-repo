@@ -1,0 +1,56 @@
+name: release
+
+# 公开仓库的"资源 CI"：负责把私有仓库构建出的 bootstrap-prod artifact
+# 上传到本仓库的 GitHub Releases，供 App 端 PackageManager 拉取。
+#
+# 触发方式：私有仓库 XION-HN/androlinux 打 tag 后跑完软件 CI，
+# 末尾的 notify-release job 向本仓库发 repository_dispatch 事件，
+# 携带 tag / source_repo / source_run_id。本 workflow 收到后：
+#   1. 用 PRIVATE_REPO_TOKEN（PAT，存为 secret）跨仓库下载私有仓库的 artifact
+#   2. 用本仓库默认 GITHUB_TOKEN 创建 release 并上传资产
+#
+# 这样职责分离：私有仓库只跑软件构建，公开仓库只管 release 资产托管。
+on:
+  repository_dispatch:
+    types: [publish-release]
+
+permissions:
+  contents: write   # 创建本仓库的 release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show dispatch payload
+        run: |
+          echo "tag           = ${{ github.event.client_payload.tag }}"
+          echo "source_repo   = ${{ github.event.client_payload.source_repo }}"
+          echo "source_run_id = ${{ github.event.client_payload.source_run_id }}"
+
+      - name: Download bootstrap-prod artifact from private repo
+        uses: actions/download-artifact@v4
+        with:
+          # 跨仓库下载：指定源仓库 + run_id + token
+          repository: ${{ github.event.client_payload.source_repo }}
+          run_id: ${{ github.event.client_payload.source_run_id }}
+          name: bootstrap-prod
+          path: /tmp/bootstrap-prod
+          github-token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+
+      - name: List downloaded assets
+        run: |
+          echo "=== 下载的资产 ==="
+          ls -la /tmp/bootstrap-prod/
+          echo ""
+          echo "=== packages/*.tar.gz ==="
+          ls -la /tmp/bootstrap-prod/packages/ | head -20
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.client_payload.tag }}
+          files: |
+            /tmp/bootstrap-prod/packages.json
+            /tmp/bootstrap-prod/packages/*.tar.gz
+          generate_release_notes: true
+          fail_on_unmatched_files: true
