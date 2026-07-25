@@ -29,10 +29,17 @@
             android:textIsSelectable="true" />
 
         <Button
-            android:id="@+id/btn_exec_test"
+            android:id="@+id/btn_run_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:text="一键全量自检（exec+Python+pip）" />
+
+        <Button
+            android:id="@+id/btn_exec_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="运行 exec 自检（场景 1+2）" />
 
         <TextView

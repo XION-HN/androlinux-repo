@@ -7,6 +7,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /** 设备矩阵验证的数据收集工具：信息聚合 / exec 自检 / 幻影压测 */
@@ -49,6 +52,73 @@ public final class Diagnostics {
     /** pip 自检：验证 pip 入口脚本与 shebang、site-packages 安装完整 */
     public static String pipSelfTest() {
         return runShell(bootstrapEnv(), App.PREFIX + "/bin/pip3.13", "--version");
+    }
+
+    /**
+     * 一键全量自检：按 spec 场景 1+2 顺序跑 exec → Python → pip，输出结构化报告。
+     * 幻影压测是异步长任务（fork 40×sleep 300），不纳入本同步序列，单独按钮触发。
+     *
+     * 报告含每项原始输出 + PASS/FAIL 判定 + 末尾汇总，便于直接粘贴进
+     * docs/device-test-checklist.md 的验证报告表格。
+     */
+    public static String runAllSelfTests(Context ctx) {
+        StringBuilder sb = new StringBuilder();
+        String ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
+
+        sb.append("=== AndroLinux 全量自检报告 ===\n");
+        sb.append("生成时间: ").append(ts).append("\n\n");
+        sb.append(collectBasic(ctx)).append('\n');
+
+        int passed = 0;
+        int total = 3;
+
+        // --- 1/3 exec 自检（场景 1+2：shell 可执行 + 三层 .so 链 + HTTPS）---
+        String execOut = execSelfTest();
+        boolean execPass = execOut.contains("EXEC_OK")
+            && (execOut.contains("HTTP/1.1 200") || execOut.contains("HTTP/2 200"));
+        if (execPass) passed++;
+        sb.append("--- 1/").append(total).append(" exec 自检（场景 1+2）---\n");
+        sb.append("输出:\n").append(indent(execOut)).append('\n');
+        sb.append("结论: ").append(execPass ? "PASS" : "FAIL").append("\n\n");
+
+        // --- 2/3 Python 自检（核心 C 扩展：_ssl/_ctypes/_sqlite3/_bz2/_lzma/...）---
+        String pyOut = pythonSelfTest();
+        boolean pyPass = pyOut.contains("PY_OK");
+        if (pyPass) passed++;
+        sb.append("--- 2/").append(total).append(" Python 自检（核心 C 扩展）---\n");
+        sb.append("输出:\n").append(indent(pyOut)).append('\n');
+        sb.append("结论: ").append(pyPass ? "PASS" : "FAIL").append("\n\n");
+
+        // --- 3/3 pip 自检（入口脚本 + shebang + site-packages）---
+        String pipOut = pipSelfTest();
+        // pip --version 成功输出形如 "pip 24.2 from .../pip (python 3.13)"
+        // 失败标记：[stderr] / [exec失败] / [timeout]
+        boolean pipPass = pipOut.contains("pip")
+            && pipOut.contains("python")
+            && !pipOut.contains("[exec失败]")
+            && !pipOut.contains("[timeout]");
+        if (pipPass) passed++;
+        sb.append("--- 3/").append(total).append(" pip 自检 ---\n");
+        sb.append("输出:\n").append(indent(pipOut)).append('\n');
+        sb.append("结论: ").append(pipPass ? "PASS" : "FAIL").append("\n\n");
+
+        sb.append("=== 汇总: ").append(passed).append('/').append(total).append(" 通过 ===\n");
+        if (passed < total) {
+            sb.append("提示: 失败项请进入「诊断」页单独复跑，或用「导出诊断日志」收 logcat。\n");
+        }
+        return sb.toString();
+    }
+
+    /** 每行前加 2 空格缩进，便于在报告里区分原始输出与判定文字。 */
+    private static String indent(String s) {
+        if (s == null || s.isEmpty()) return "  (无输出)";
+        StringBuilder r = new StringBuilder(s.length() + 16);
+        for (String line : s.split("\n", -1)) {
+            r.append("  ").append(line).append('\n');
+        }
+        // 去掉末尾多余换行
+        if (r.length() > 0 && r.charAt(r.length() - 1) == '\n') r.setLength(r.length() - 1);
+        return r.toString();
     }
 
     /** 幻影进程压测：fork 40 个 sleep 300（进程脱离父进程后由 init 收养，正是幻影杀手的目标） */

@@ -31,6 +31,9 @@ public class SettingsActivity extends Activity {
 
         mDeviceInfo.setText(Diagnostics.collectBasic(this));
 
+        Button btnRunAll = findViewById(R.id.btn_run_all);
+        btnRunAll.setOnClickListener(v -> runTest("全量自检", () -> Diagnostics.runAllSelfTests(this)));
+
         Button btnExec = findViewById(R.id.btn_exec_test);
         btnExec.setOnClickListener(v -> runTest("exec 自检", Diagnostics::execSelfTest));
 

@@ -50,3 +50,59 @@ bash --version   # 重装后仍可执行 → "下载→解压→执行"通路成
 - **P0-2**：≥4/5 设备场景 1+2 通过（失败须定位原因）
 - **P1-1**：5 台设备幻影杀手行为均有结论
 - **P1-2**：场景 4 通过
+
+## 自动化辅助
+
+### CI 状态自查（开发机侧）
+
+私有仓库无法匿名访问，先用以下任一方式鉴权后运行 `scripts/ci-status.sh`：
+
+```bash
+# 方式 1：PAT（需勾选 repo + actions:read，创建于 https://github.com/settings/tokens）
+export GH_TOKEN=ghp_xxx
+
+# 方式 2：交互式登录（凭证持久化）
+gh auth login
+
+# 查最近 5 次 run + 最新 run 的 job/artifact（失败时自动 dump 末尾 80 行日志）
+./scripts/ci-status.sh
+
+# 仅看最新完成 run 的 artifact 下载信息
+./scripts/ci-status.sh artifacts
+
+# 查指定 run 的详情 + 失败日志
+./scripts/ci-status.sh <run-id>
+
+# 下载 APK artifact 到 ./dist/
+gh run download <run-id> --repo XION-HN/androlinux --name androlinux-apk -D ./dist/
+```
+
+### 设备侧一键全量自检
+
+App「诊断」页顶部「一键全量自检（exec+Python+pip）」按钮会按 spec 场景 1+2 顺序跑：
+exec 自检 → Python 核心模块导入 → pip --version，输出结构化报告（含 PASS/FAIL 判定 + 汇总 X/3）。
+
+报告会自动累积进「复制全部诊断信息」缓冲区，可直接粘贴到下方的验证报告汇总表。
+
+> 幻影压测是异步长任务（fork 40×sleep 300，5 分钟后观测），单独按钮触发，不纳入一键序列。
+
+## 验证报告汇总表
+
+> 每台设备测完填写一行。一键自检报告粘贴到「自检报告」列（可折叠）。
+> Go/No-Go 判据：P0-2 = 场景1+2 ≥4 台通过；P1-1 = 5 台幻影行为有结论；P1-2 = 场景4 通过。
+
+| # | 设备 | 系统 | Android | 场景1+2 | 幻影存活数 | 场景4 | 结论 | 自检报告 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Pixel | AOSP | | PASS/FAIL | /40 | PASS/FAIL | Go/No-Go | <details><summary>展开</summary><pre>粘贴一键自检输出</pre></details> |
+| 2 | 小米 | HyperOS | | | /40 | | | |
+| 3 | 华为 | EMUI/HarmonyOS | | | /40 | | | |
+| 4 | OPPO | ColorOS | | | /40 | | | |
+| 5 | vivo | OriginOS | | | /40 | | | |
+
+### 最终结论
+
+- P0-2（场景 1+2 ≥4/5 通过）：[ ] 达标 / [ ] 未达标
+- P1-1（幻影行为 5 台有结论）：[ ] 达标 / [ ] 未达标
+- P1-2（场景 4 装包通路）：[ ] 达标 / [ ] 未达标
+
+**整体 Go/No-Go**：[ ] Go（进入 Phase 2） / [ ] No-Go（列出阻塞项）
