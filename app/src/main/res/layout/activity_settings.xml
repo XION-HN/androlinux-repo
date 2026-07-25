@@ -107,6 +107,20 @@
             android:text="复制 ADB 命令" />
 
         <Button
+            android:id="@+id/btn_export_logs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="导出诊断日志到 Android/data" />
+
+        <Button
+            android:id="@+id/btn_list_logs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="查看日志文件列表" />
+
+        <Button
             android:id="@+id/btn_copy_diag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

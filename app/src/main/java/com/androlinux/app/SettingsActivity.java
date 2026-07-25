@@ -51,6 +51,34 @@ public class SettingsActivity extends Activity {
         Button btnCopyAdb = findViewById(R.id.btn_copy_adb);
         btnCopyAdb.setOnClickListener(v -> copyToClipboard("adb", Diagnostics.ADB_DISABLE_PHANTOM));
 
+        Button btnExportLogs = findViewById(R.id.btn_export_logs);
+        btnExportLogs.setOnClickListener(v -> {
+            mExecOutput.setVisibility(View.VISIBLE);
+            mExecOutput.setText("导出中…");
+            new Thread(() -> {
+                final java.io.File f = CrashHandler.exportDiagnostics(this);
+                mHandler.post(() -> {
+                    if (f != null) {
+                        String p = f.getAbsolutePath();
+                        Toast.makeText(this, "已导出:\n" + p, Toast.LENGTH_LONG).show();
+                        mExecOutput.setText("已导出诊断日志:\n" + p
+                            + "\n\n用文件管理器进 Android/data/com.androlinux.app/files/logs/ 取回。");
+                        mDiagLog.append("--- 导出诊断日志 ---\n").append(p).append("\n\n");
+                    } else {
+                        Toast.makeText(this, "导出失败", Toast.LENGTH_LONG).show();
+                        mExecOutput.setText("导出失败");
+                    }
+                });
+            }, "export-logs").start();
+        });
+
+        Button btnListLogs = findViewById(R.id.btn_list_logs);
+        btnListLogs.setOnClickListener(v -> {
+            String list = CrashHandler.listLogFiles(this);
+            mExecOutput.setVisibility(View.VISIBLE);
+            mExecOutput.setText(list);
+        });
+
         Button btnCopyDiag = findViewById(R.id.btn_copy_diag);
         btnCopyDiag.setOnClickListener(v -> {
             String all = Diagnostics.collectBasic(this) + "\n" + mDiagLog.toString();

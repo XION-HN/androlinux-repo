@@ -17,6 +17,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // 全局崩溃捕获：必须在所有业务初始化前安装，覆盖任意线程的未捕获异常
+        Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(this));
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationManager nm = getSystemService(NotificationManager.class);
             nm.createNotificationChannel(new NotificationChannel(
