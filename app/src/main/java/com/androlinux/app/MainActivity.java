@@ -43,6 +43,11 @@ public class MainActivity extends Activity {
 
         mTerminalView.setTerminalViewClient(mViewClient);
         mTerminalView.setKeepScreenOn(true);
+        // TerminalView 不会自行初始化 mRenderer（仅 setTextSize/setTypeface 里创建），
+        // 若不调用则 attachSession→updateSize 访问 mRenderer.mFontWidth 会 NPE 崩溃。
+        // 设默认字体 12sp（Termux 官方用法，使用方负责设置初始字号）。
+        float density = getResources().getDisplayMetrics().density;
+        mTerminalView.setTextSize((int) (12 * density));
 
         btnSettings.setOnClickListener(v ->
             startActivity(new Intent(this, SettingsActivity.class)));
