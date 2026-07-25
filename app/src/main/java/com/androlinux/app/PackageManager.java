@@ -43,10 +43,24 @@ public final class PackageManager {
 
     private static final String TAG = "PackageManager";
 
-    /** 仓库索引 URL。打 tag 后由 CI 上传到 GitHub Releases。
-     *  latest 指向最新 release，无需改代码即可拿到新包。 */
-    private static final String INDEX_URL =
-        "https://github.com/XION-HN/androlinux/releases/download/latest/packages.json";
+    /** 包发布仓库（必须 public，App 端无 token 访问）。
+     *  开发仓库 XION-HN/androlinux 是 private，不能直接给 App 用；
+     *  发布资产统一推到公开仓库 XION-HN/androlinux-repo 的 Releases。 */
+    private static final String RELEASE_REPO_OWNER = "XION-HN";
+    private static final String RELEASE_REPO_NAME  = "androlinux-repo";
+
+    /** 仓库 API：查最新 release 的 tag 名。App 运行时动态获取 latest tag，
+     *  避免硬编码 tag 名（每发新 release 要改代码）。
+     *  GitHub 的 "latest" 别名只在 API 层生效，下载 URL 路径必须是真实 tag 名。 */
+    private static final String REPO_API_LATEST =
+        "https://api.github.com/repos/" + RELEASE_REPO_OWNER + "/" + RELEASE_REPO_NAME + "/releases/latest";
+
+    /** packages.json 在 release 资产里的下载 URL 模板（占位符 %s = tag 名） */
+    private static final String INDEX_URL_TEMPLATE =
+        "https://github.com/" + RELEASE_REPO_OWNER + "/" + RELEASE_REPO_NAME + "/releases/download/%s/packages.json";
+
+    /** 缓存最新 tag 名，避免每次拉索引都查一次 API */
+    private static volatile String sCachedLatestTag;
 
     /** 已安装包记录目录：$PREFIX/var/installed/<name> 内容为版本号 */
     private static final String INSTALLED_DIR = App.PREFIX + "/var/installed";
@@ -113,13 +127,22 @@ public final class PackageManager {
 
     /** 同步拉取并解析索引 */
     static List<PackageInfo> fetchIndexSync() throws Exception {
-        URL url = new URL(INDEX_URL);
+        // 1. 查最新 release tag（缓存命中则跳过 API 调用）
+        String tag = sCachedLatestTag;
+        if (tag == null) {
+            tag = fetchLatestReleaseTag();
+            sCachedLatestTag = tag;
+        }
+        // 2. 拼 packages.json 的下载 URL 并拉取
+        String indexUrl = String.format(INDEX_URL_TEMPLATE, tag);
+        URL url = new URL(indexUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(15000);
         conn.setReadTimeout(30000);
+        conn.setRequestProperty("User-Agent", "AndroLinux-PackageManager");
         try {
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("HTTP " + conn.getResponseCode() + " 取索引失败");
+                throw new RuntimeException("HTTP " + conn.getResponseCode() + " 取索引失败: " + indexUrl);
             }
             StringBuilder sb = new StringBuilder();
             try (BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
@@ -133,6 +156,34 @@ public final class PackageManager {
                 pkgs.add(new PackageInfo(arr.getJSONObject(i)));
             }
             return pkgs;
+        } finally {
+            conn.disconnect();
+        }
+    }
+
+    /** 调 GitHub API 查最新 release 的 tag 名 */
+    private static String fetchLatestReleaseTag() throws Exception {
+        URL url = new URL(REPO_API_LATEST);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(15000);
+        conn.setReadTimeout(15000);
+        conn.setRequestProperty("User-Agent", "AndroLinux-PackageManager");
+        conn.setRequestProperty("Accept", "application/vnd.github+json");
+        try {
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("HTTP " + conn.getResponseCode() + " 查 latest release 失败");
+            }
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String line;
+                while ((line = r.readLine()) != null) sb.append(line).append('\n');
+            }
+            JSONObject root = new JSONObject(sb.toString());
+            String tag = root.getString("tag_name");
+            if (tag == null || tag.isEmpty()) {
+                throw new RuntimeException("API 返回的 tag_name 为空");
+            }
+            return tag;
         } finally {
             conn.disconnect();
         }

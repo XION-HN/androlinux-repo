@@ -9,7 +9,7 @@
 #
 # 用法:
 #   ./make-packages-index.sh
-#   REPO_URL="https://github.com/XION-HN/androlinux-packages" \
+#   REPO_URL="https://github.com/XION-HN/androlinux-repo" \
 #     RELEASE_TAG="v1.0.0" ./make-packages-index.sh
 set -euo pipefail
 
@@ -17,11 +17,14 @@ BS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$BS_ROOT/config.sh"
 source "$BS_ROOT/lib/common.sh"
 
-# Releases 下载 URL 前缀（不含 tag 和文件名）
+# Releases 下载 URL 前缀（到 <repo> 根，不含 /releases/download/...）
 # 公开仓库的 release 资产 URL 形如:
 #   https://github.com/<owner>/<repo>/releases/download/<tag>/<filename>
-REPO_URL="${REPO_URL:-https://github.com/XION-HN/androlinux/releases}"
-RELEASE_TAG="${RELEASE_TAG:-latest}"
+# 注意：GitHub 的 "latest" 别名只在 API 层生效，下载 URL 路径必须是真实 tag 名，
+# 用 "latest" 作 RELEASE_TAG 会导致 download_url 全部 404。CI 必须传真实 tag。
+# 仓库必须 public，否则 App 端无 token 拉不到索引和资产。
+REPO_URL="${REPO_URL:-https://github.com/XION-HN/androlinux-repo}"
+RELEASE_TAG="${RELEASE_TAG:?RELEASE_TAG 未设置（CI 必须传真实 tag 名，如 v0.1.0）}"
 
 PKG_DIR="$DIST_DIR/packages"
 INDEX_FILE="$DIST_DIR/packages.json"
@@ -82,7 +85,10 @@ def get_deps(name):
         return []
 
 def get_symlinks(name):
-    """扫描包 staging 的符号链接，返回 [{link, target}, ...]"""
+    """扫描包 staging 的符号链接，返回 [{link, target}, ...]
+    target 保持 staging 里的原始值（可能是相对/绝对路径）。
+    绝对路径的目标（如 /home/runner/...）转成相对 prefix 的路径或目标文件名，
+    避免设备上 symlink 指向不存在的宿主路径。"""
     stage_dir = f"{pkg_stage_root}/{name}{prefix}"
     if not os.path.isdir(stage_dir):
         return []
@@ -93,6 +99,16 @@ def get_symlinks(name):
             if os.path.islink(full):
                 rel = os.path.relpath(full, stage_dir)
                 tgt = os.readlink(full)
+                # 绝对路径目标：转成相对 link 所在目录的相对路径
+                if tgt.startswith("/"):
+                    link_abs = os.path.join(stage_dir, rel)
+                    link_dir = os.path.dirname(link_abs)
+                    try:
+                        tgt_rel = os.path.relpath(tgt, link_dir)
+                        tgt = tgt_rel
+                    except Exception:
+                        # 无法转换则用目标 basename 兜底
+                        tgt = os.path.basename(tgt)
                 symlinks.append({"link": rel, "target": tgt})
     return symlinks
 
@@ -135,7 +151,13 @@ for fn in sorted(os.listdir(pkg_dir)):
     deps = get_deps(name)
     symlinks = get_symlinks(name)
 
-    download_url = f"{repo_url}/releases/download/{release_tag}/{fn}"
+    # REPO_URL 统一为仓库根（如 https://github.com/XION-HN/androlinux-repo），
+    # 拼出标准 release 资产下载 URL。
+    # 若误传了带 /releases 的 URL，也做一次容错剥离，避免 releases/releases 重复。
+    base = repo_url.rstrip("/")
+    if base.endswith("/releases"):
+        base = base[: -len("/releases")]
+    download_url = f"{base}/releases/download/{release_tag}/{fn}"
 
     packages.append({
         "name": name,
