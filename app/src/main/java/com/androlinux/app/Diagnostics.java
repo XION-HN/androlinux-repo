@@ -34,9 +34,12 @@ public final class Diagnostics {
 
     /** exec 自检 = 设备矩阵场景 1+2 的半自动化 */
     public static String execSelfTest() {
+        // 命令刻意不依赖 wc/head/grep 等 toybox 命令——自检目的是验证 shell 可执行
+        // + 动态链接链 + HTTPS 通路，不该被 toybox 装不全拖垮。
+        // curl -w 直接输出 http_code 到 stdout，无需 head 截取；-o /dev/null 丢弃 body。
         return runShell(bootstrapEnv(), App.PREFIX + "/bin/bash", "-c",
-            "echo EXEC_OK; uname -m; ls $PREFIX/bin | wc -l; "
-          + "curl -sI https://www.baidu.com | head -1");
+            "echo EXEC_OK; uname -m; ls $PREFIX/bin; "
+          + "curl -sI -w 'HTTP:%{http_code}\\n' -o /dev/null https://www.baidu.com");
     }
 
     /** Python 自检：验证解释器能启动并加载核心 C 扩展（覆盖多层 .so 依赖链） */
@@ -74,8 +77,8 @@ public final class Diagnostics {
 
         // --- 1/3 exec 自检（场景 1+2：shell 可执行 + 三层 .so 链 + HTTPS）---
         String execOut = execSelfTest();
-        boolean execPass = execOut.contains("EXEC_OK")
-            && (execOut.contains("HTTP/1.1 200") || execOut.contains("HTTP/2 200"));
+        // execSelfTest 现在用 curl -w 输出 "HTTP:200"，不依赖 head。
+        boolean execPass = execOut.contains("EXEC_OK") && execOut.contains("HTTP:200");
         if (execPass) passed++;
         sb.append("--- 1/").append(total).append(" exec 自检（场景 1+2）---\n");
         sb.append("输出:\n").append(indent(execOut)).append('\n');
@@ -83,7 +86,10 @@ public final class Diagnostics {
 
         // --- 2/3 Python 自检（核心 C 扩展：_ssl/_ctypes/_sqlite3/_bz2/_lzma/...）---
         String pyOut = pythonSelfTest();
-        boolean pyPass = pyOut.contains("PY_OK");
+        // 不能用 contains("PY_OK")：import 失败时 Traceback 会回显源码行
+        // "print('PY_OK', ...)"，含 PY_OK 字符串，导致误判 PASS。
+        // 必须只看 stdout（非 [stderr] 行）是否含 PY_OK。
+        boolean pyPass = containsStdoutMarker(pyOut, "PY_OK");
         if (pyPass) passed++;
         sb.append("--- 2/").append(total).append(" Python 自检（核心 C 扩展）---\n");
         sb.append("输出:\n").append(indent(pyOut)).append('\n');
@@ -107,6 +113,20 @@ public final class Diagnostics {
             sb.append("提示: 失败项请进入「诊断」页单独复跑，或用「导出诊断日志」收 logcat。\n");
         }
         return sb.toString();
+    }
+
+    /**
+     * 检查输出中是否存在非 stderr 行含指定标记。
+     * runShell 把 stderr 行加了 "[stderr] " 前缀，stdout 行无前缀。
+     * 用于规避 Traceback 回显源码导致的误判（如源码含 'PY_OK' 字符串）。
+     */
+    private static boolean containsStdoutMarker(String output, String marker) {
+        if (output == null || output.isEmpty()) return false;
+        for (String line : output.split("\n", -1)) {
+            if (line.startsWith("[stderr]")) continue;
+            if (line.contains(marker)) return true;
+        }
+        return false;
     }
 
     /** 每行前加 2 空格缩进，便于在报告里区分原始输出与判定文字。 */
