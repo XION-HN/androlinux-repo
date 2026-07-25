@@ -14,6 +14,11 @@ pkg_build() {
     for opt in SU LOGIN PASSWD ICONV; do
         sed -i "s/^CONFIG_${opt}=y/# CONFIG_${opt} is not set/" .config
     done
+    # 显式启用 defconfig 未默认启用但用户常用的命令
+    # toybox defconfig 不会启用全部命令，awk/tr 等需要手动开启
+    for opt in AWK TR; do
+        sed -i "s/^# CONFIG_${opt} is not set/CONFIG_${opt}=y/" .config
+    done
     make -j"$JOBS" CC="$CC" STRIP="$STRIP"
 
     # toybox 的 make install 会运行 ./toybox --install 创建命令符号链接，
