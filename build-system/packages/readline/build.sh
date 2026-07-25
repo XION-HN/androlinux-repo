@@ -15,10 +15,14 @@ pkg_build() {
     # 的 PC 符号（termcap pad character，由 libncursesw 提供）无法解析，报
     # "cannot locate symbol PC referenced by libreadline.so.8.2"。
     # bash_cv_termcap_lib 是 readline/bash 共用的 autoconf cache 变量，
-    # 取值 libncursesw 让 configure 设 TERMCAP_LIB=-lncursesw，链接时记录 NEEDED。
+    # 取值 libncursesw 让 configure 设 TERMCAP_LIB=-lncursesw。
+    # 但 readline 8.2 的共享库链接实际用 SHLIB_LIBS（configure 时已替换为空），
+    # 仅靠 cache 变量不够，必须在 make 时命令行覆盖 SHLIB_LIBS 才能生效。
     export bash_cv_termcap_lib=libncursesw
     gnu_configure --with-curses
-    make -j"$JOBS"
+    # SHLIB_LIBS 命令行覆盖：GNU make 命令行变量优先级高于 Makefile 赋值，
+    # 强制 libreadline.so / libhistory.so 链接 -lncursesw，记录 NEEDED。
+    make -j"$JOBS" SHLIB_LIBS="-lncursesw"
     stage_install
     verify_needed
 }
