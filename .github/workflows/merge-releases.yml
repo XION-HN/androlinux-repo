@@ -1,0 +1,62 @@
+name: merge-releases
+
+# 将多个 release 的资产按首字母合并到 26 个新 release（pip-a ~ pip-z），删除旧 release
+#
+# 触发: workflow_dispatch（手动）
+# 前置条件:
+#   - GITHUB_TOKEN 需 contents:write 权限（已配置）
+#   - 原 release 存在且有资产
+#
+# 执行流程:
+#   1. 列出所有原 release 的资产
+#   2. 去重（同文件名取最新 tag 的版本）
+#   3. 按首字母分组（a-z）
+#   4. 下载所有资产到 runner 临时目录
+#   5. 创建 26 个新 release（pip-a ~ pip-z）
+#   6. 上传资产到对应 release
+#   7. 删除原 5 个 release
+
+on:
+  workflow_dispatch:
+    inputs:
+      old_tags:
+        description: '要合并的旧 tag（逗号分隔）'
+        required: false
+        type: string
+        default: 'v0.0.1,v0.1.4,v0.2.0,v0.3.0,v0.4.0'
+
+permissions:
+  contents: write   # 需创建/删除 release
+  actions: read    # 需读 release 列表
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120   # 2 小时超时（下载+上传 6.5 GB）
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends python3
+          gh --version || echo "gh CLI 缺失"
+
+      - name: Run merge-releases.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          OLD_TAGS: ${{ inputs.old_tags }}
+        run: |
+          set -e
+          echo "=== 开始合并 release ==="
+          echo "旧 tag: $OLD_TAGS"
+          echo "仓库: $REPO"
+          python3 scripts/merge-releases.py
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Merge Releases Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "查看 Actions 日志获取详细结果" >> $GITHUB_STEP_SUMMARY
