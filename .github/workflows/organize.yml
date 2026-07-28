@@ -13,6 +13,11 @@ name: organize-repo
 on:
   workflow_dispatch:
     inputs:
+      only_latest:
+        description: 'true=仅整理最新 release；false=整理所有 release（含历史 v0.1.x/v0.2.x/v0.3.x）'
+        required: false
+        type: boolean
+        default: true
       sign_release:
         description: '是否 GPG 签名 Release（InRelease + Release.gpg）'
         required: false
@@ -45,10 +50,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
+          ONLY_LATEST: ${{ inputs.only_latest }}
         run: |
           set -e
           # GITHUB_TOKEN 默认有 contents:read + actions:read，足够扫描 releases
           # 但 push gh-pages 需要 contents:write（permissions 已配置）
+          echo "ONLY_LATEST=${ONLY_LATEST:-true}"
           ./scripts/organize-repo.sh
 
       - name: Sign Release (optional)
