@@ -417,13 +417,33 @@ PYEOF
 
 log ""
 log "===== 整理报告 ====="
-cat "$DIST_DIR/organize-report.json" | python3 -m json.tool 2>/dev/null | head -30
+python3 -c "
+import json
+with open('$DIST_DIR/organize-report.json') as f:
+    r = json.load(f)
+print(f'  .deb 归档: {r[\"deb_count\"]} 个')
+print(f'  .whl 归档: {r[\"whl_count\"]} 个')
+print(f'  跳过: {r[\"skip_count\"]} 个（bootstrap.zip / *.json / *.tar.gz 等）')
+if r.get('errors'):
+    print(f'  错误: {len(r[\"errors\"])} 个', flush=True)
+    for e in r['errors'][:5]:
+        print(f'    {e}', flush=True)
+print('  apt 首字母分布:')
+for letter, n in sorted(r.get('deb_by_letter', {}).items()):
+    print(f'    {letter}/  {n} 个')
+print('  pip 首字母分布:')
+for letter, n in sorted(r.get('whl_by_letter', {}).items()):
+    print(f'    {letter}/  {n} 个')
+" || true
+
 log ""
-log "===== 仓库结构 ====="
-find "$DIST_DIR" -type d | sort | head -30
+log "===== 仓库结构（顶层 + 二级目录）====="
+# 用 -maxdepth 限制输出量，避免管道被截断触发 SIGPIPE
+find "$DIST_DIR" -maxdepth 3 -type d 2>/dev/null | sort | sed 's/^/  /' || true
+
 log ""
 log "产物: $DIST_DIR/"
-log "  apt-repo/  $(find "$DIST_DIR/apt-repo" -name '*.deb' | wc -l) 个 .deb"
-log "  pip-repo/  $(find "$DIST_DIR/pip-repo" -name '*.whl' | wc -l) 个 .whl"
+log "  apt-repo/  $(find "$DIST_DIR/apt-repo" -name '*.deb' 2>/dev/null | wc -l) 个 .deb"
+log "  pip-repo/  $(find "$DIST_DIR/pip-repo" -name '*.whl' 2>/dev/null | wc -l) 个 .whl"
 log ""
 log "下一步: 部署 dist/apt-repo/ + dist/pip-repo/ 到 gh-pages 分支"
