@@ -1,29 +1,26 @@
 #!/usr/bin/env bash
 # organize-repo.sh —— 扫描 haisa-des-repo Release 资产，生成索引部署到 gh-pages
 #
-# 设计（index-only 模式）：
-#   - gh-pages 只存索引（HTML / Packages / Release），不下载 wheel/.deb 文件本体
-#   - PEP 503 simple/<首字母>/<包名>/index.html 的 href 用 Releases 绝对 URL（pip 跳转下载）
-#   - apt Packages 的 Filename 字段用 Releases 绝对 URL（apt 2.8.1 支持绝对 URL）
-#   - 优点：gh-pages 仓库体积小（< 5MB），git push 不会触发 HTTP 500
-#   - wheel/.deb 文件本体保留在 Releases（已上传）
+# 设计（index-only 模式 + 并行扫描）:
+#   - gh-pages 只存索引（HTML / Packages / Release），不下载文件本体
+#   - PEP 503 simple/<首字母>/<包名>/index.html 的 href 用 Releases 绝对 URL
+#   - apt Packages 的 Filename 字段用 Releases 绝对 URL
+#   - 并行扫描 26 个 release（xargs -P 8），减少总扫描时间
 #
-# 输入:
-#   ONLY_LATEST=true（默认）: 仅整理最新 release
-#   ONLY_LATEST=false:        整理所有 release（数据量大，但只生成索引仍轻量）
+# Release 布局（固定 26 个 tag）:
+#   pip-a / pip-b / ... / pip-z
+#   每个文件按首字母归到对应 release（同名 clobber 覆盖）
 #
-# 产物:
-#   dist/apt-repo/          Debian 仓库元数据（dists/stable/...）
-#   dist/pip-repo/           PEP 503 simple 索引
-#   dist/organize-report.json  整理报告
+# 触发方式:
+#   - 手动: workflow_dispatch
+#   - 自动: repository_dispatch（bootstrap CI 发版后调用）
 #
-# 用法（CI 中）:
+# 用法:
 #   REPO=XION-HN/haisa-des-repo GH_TOKEN=$TOKEN ./scripts/organize-repo.sh
 set -euo pipefail
 
 REPO="${REPO:-XION-HN/haisa-des-repo}"
 : "${GH_TOKEN:?GH_TOKEN 未设置（需 haisa-des-repo 的 PAT）}"
-ONLY_LATEST="${ONLY_LATEST:-true}"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$ROOT/dist"
@@ -35,31 +32,29 @@ die()  { printf '\033[1;31m[error]\033[0m %s\n' "$*" >&2; exit 1; }
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-log "扫描 $REPO Release 资产（ONLY_LATEST=$ONLY_LATEST）..."
+# 1. 列出所有 release tag（26 个 pip-* 固定 tag + 其他动态 tag）
+log "扫描 $REPO 所有 release tag..."
+mapfile -t ALL_TAGS < <(gh release list --repo "$REPO" --json tagName --jq '.[].tagName' | sort -V)
+[ ${#ALL_TAGS[@]} -gt 0 ] || die "$REPO 无任何 release"
+log "共 ${#ALL_TAGS[@]} 个 release: ${ALL_TAGS[*]}"
 
-# 1. 列出需要扫描的 release tag
-if [ "$ONLY_LATEST" = "true" ]; then
-    LATEST_TAG=$(gh release list --repo "$REPO" --json tagName,isLatest --jq '.[] | select(.isLatest) | .tagName' | head -1)
-    if [ -z "$LATEST_TAG" ]; then
-        LATEST_TAG=$(gh release list --repo "$REPO" --json tagName --jq '.[].tagName' | sort -V | tail -1)
-    fi
-    [ -n "$LATEST_TAG" ] || die "$REPO 无任何 release"
-    log "仅整理最新 release: $LATEST_TAG"
-    TAGS=("$LATEST_TAG")
-else
-    mapfile -t TAGS < <(gh release list --repo "$REPO" --json tagName --jq '.[].tagName' | sort -V)
-    [ ${#TAGS[@]} -gt 0 ] || die "$REPO 无任何 release"
-    log "整理所有 ${#TAGS[@]} 个 release: ${TAGS[*]}"
-fi
-
-# 2. 收集资产元数据（不下载文件本体）
+# 2. 并行扫描所有 release 资产元数据（不下载文件本体）
 ASSETS_RAW="$WORK/assets-raw.jsonl"
 : > "$ASSETS_RAW"
-for tag in "${TAGS[@]}"; do
-    log "  扫描 release $tag..."
-    gh release view "$tag" --repo "$REPO" --json assets --jq '.assets[] | {tag: "'"$tag"'", name: .name, url: .url, size: .size, content_type: .contentType}' \
-        >> "$ASSETS_RAW" || true
-done
+
+scan_one_release() {
+    local tag="$1"
+    gh release view "$tag" --repo "$REPO" --json assets \
+        --jq ".assets[] | {tag: \"$tag\", name: .name, url: .url, size: .size, content_type: .contentType}"
+}
+export -f scan_one_release
+export REPO WORK ASSETS_RAW
+
+log "并行扫描 ${#ALL_TAGS[@]} 个 release（8 并发）..."
+printf '%s\n' "${ALL_TAGS[@]}" | xargs -P 8 -I {} bash -c 'scan_one_release "{}"' >> "$ASSETS_RAW" 2>/dev/null || true
+
+ASSET_COUNT=$(wc -l < "$ASSETS_RAW")
+log "资产总数: $ASSET_COUNT 个"
 
 # 3. 清理 dist/ 重建
 rm -rf "$DIST_DIR"
@@ -67,9 +62,8 @@ mkdir -p "$DIST_DIR/apt-repo/dists/stable/main/binary-aarch64" \
          "$DIST_DIR/apt-repo/pool/main" \
          "$DIST_DIR/pip-repo/simple"
 
-# 4. 用 Python 生成索引（不下载文件本体，只解析元数据 + 生成 HTML）
-#    把 TAGS 列表作为第 5 个参数（JSON 编码）传给 Python
-TAGS_JSON=$(printf '%s' "${TAGS[*]}" | python3 -c "import sys, json; print(json.dumps(sys.stdin.read().split()))")
+# 4. 用 Python 生成索引（不下载文件本体）
+TAGS_JSON=$(printf '%s' "${ALL_TAGS[*]}" | python3 -c "import sys, json; print(json.dumps(sys.stdin.read().split()))")
 python3 - "$ASSETS_RAW" "$DIST_DIR" "$REPO" "$WORK" "$TAGS_JSON" <<'PYEOF'
 import os, sys, json, re, html, datetime
 
@@ -79,7 +73,6 @@ repo = sys.argv[3]
 work_dir = sys.argv[4]
 tags_list = json.loads(sys.argv[5])
 
-# GitHub Releases 下载 URL 模式: https://github.com/<repo>/releases/download/<tag>/<filename>
 def release_url(tag, name):
     return f"https://github.com/{repo}/releases/download/{tag}/{name}"
 
@@ -95,20 +88,22 @@ with open(raw_file) as f:
         except json.JSONDecodeError:
             pass
 
-print(f"  资产总数: {len(assets)}")
+print(f"  解析资产: {len(assets)} 个")
 
 # 规范化函数
 def normalize_pip(name):
+    """PEP 503 规范化：大写转小写，连续 - _ . 替换为单个 -"""
     return re.sub(r"[-_.]+", "-", name).lower()
 
 def apt_prefix(pkg_name):
+    """Debian pool 首字母：lib* 取前 4 字符，其他取首字母"""
     if pkg_name.lower().startswith("lib"):
         return pkg_name[:4].lower()
     return pkg_name[:1].lower()
 
 # 分类
-deb_entries = []   # [{name, tag, url, size, pkg_name, prefix}, ...]
-whl_by_pkg = {}    # {norm_name: [{name, tag, url, size}]}
+deb_entries = []
+whl_by_pkg = {}
 skip_files = []
 
 for a in assets:
@@ -119,6 +114,7 @@ for a in assets:
     size = a.get("size", 0)
 
     if lower.endswith(".deb"):
+        # Debian 包名格式: <name>_<version>_<arch>.deb
         pkg_name = name.split("_", 1)[0]
         prefix = apt_prefix(pkg_name)
         deb_entries.append({
@@ -126,6 +122,7 @@ for a in assets:
             "pkg_name": pkg_name, "prefix": prefix,
         })
     elif lower.endswith(".whl"):
+        # wheel 格式: <name>-<ver>-<py>-<abi>-<plat>[-<build>].whl
         base = name[:-len(".whl")]
         parts = base.split("-")
         if len(parts) < 5:
@@ -137,13 +134,12 @@ for a in assets:
             "name": name, "tag": tag, "url": url, "size": size,
         })
     else:
-        skip_files.append((name, "非 .deb/.whl 资产（保留在 Releases）"))
+        skip_files.append((name, "非 .deb/.whl（保留在 Releases，不索引）"))
 
 # 5. 生成 PEP 503 simple 索引
 simple_root = os.path.join(dist_dir, "pip-repo", "simple")
 os.makedirs(simple_root, exist_ok=True)
 
-# 按首字母分组
 pkg_names_sorted = sorted(whl_by_pkg.keys())
 for norm_name in pkg_names_sorted:
     first_letter = norm_name[0].lower()
@@ -164,8 +160,6 @@ for norm_name in pkg_names_sorted:
         "  <ul>",
     ]
     for w in wheels:
-        # href 直接指向 GitHub Releases 绝对 URL（pip 完全支持）
-        # wheel 文件本体保留在 Releases，gh-pages 不存
         href = w["url"]
         size_mb = w["size"] / 1024 / 1024
         lines.append(f'    <li><a href="{html.escape(href)}">{html.escape(w["name"])}</a> ({size_mb:.1f} MB)</li>')
@@ -193,13 +187,11 @@ top_lines += ["  </ul>", "</body>", "</html>", ""]
 with open(os.path.join(simple_root, "index.html"), "w") as f:
     f.write("\n".join(top_lines))
 
-# 6. 生成 apt Packages（Filename 用 Releases 绝对 URL）
+# 6. 生成 apt Packages
 packages_path = os.path.join(dist_dir, "apt-repo", "dists", "stable", "main", "binary-aarch64", "Packages")
 os.makedirs(os.path.dirname(packages_path), exist_ok=True)
 
-# 用 control 文件解析（.deb 的 control 我们没有，因为没下载文件本体）
-# 折中：从文件名提取 Package/Version/Architecture
-# 文件名格式: <name>_<version>_<arch>.deb
+# 从 .deb 文件名提取 Package/Version/Architecture
 entries = []
 for d in deb_entries:
     parts = d["name"].rsplit("_", 2)
@@ -216,8 +208,6 @@ for d in deb_entries:
         f"Description: {pkg_name} package (from release {d['tag']})",
         f"Filename: {d['url']}",  # apt 2.8.1 支持绝对 URL
         f"Size: {d['size']}",
-        # MD5sum/SHA256 留空（不下载文件无法计算，apt trusted=yes 跳过校验）
-        # 后续如需严格校验，可让 haisa-des-bootstrap CI 在构建时把 sha256 写进 sidecar JSON
     ]
     entries.append("\n".join(entry))
 
@@ -278,12 +268,13 @@ with open(release_path, "w") as f:
 
 # 8. 写整理报告
 report = {
+    "generated_at": now,
     "tag_scanned": tags_list,
     "deb_count": len(deb_entries),
     "whl_count": sum(len(v) for v in whl_by_pkg.values()),
     "whl_pkg_count": len(whl_by_pkg),
     "skip_count": len(skip_files),
-    "skip_files": [n for n, _ in skip_files[:20]],
+    "skip_files": [n for n, _ in skip_files[:30]],
     "deb_by_letter": {},
     "whl_by_letter": {},
 }
@@ -301,8 +292,6 @@ with open(os.path.join(dist_dir, "organize-report.json"), "w") as f:
 print(f"  .deb 索引: {report['deb_count']} 个")
 print(f"  .whl 索引: {report['whl_count']} 个 ({report['whl_pkg_count']} 个包)")
 print(f"  跳过: {report['skip_count']} 个")
-print(f"  apt 首字母分布: {report['deb_by_letter']}")
-print(f"  pip 首字母分布: {report['whl_by_letter']}")
 PYEOF
 
 log ""
@@ -313,7 +302,7 @@ with open('$DIST_DIR/organize-report.json') as f:
     r = json.load(f)
 print(f'  .deb 索引: {r[\"deb_count\"]} 个')
 print(f'  .whl 索引: {r[\"whl_count\"]} 个 ({r[\"whl_pkg_count\"]} 个包)')
-print(f'  跳过: {r[\"skip_count\"]} 个（bootstrap.zip / *.json / *.tar.gz 等）')
+print(f'  跳过: {r[\"skip_count\"]} 个（*.tar.gz / *.zip / *.json 等）')
 print('  apt 首字母分布:')
 for letter, n in sorted(r.get('deb_by_letter', {}).items()):
     print(f'    {letter}/  {n} 个')
@@ -323,12 +312,8 @@ for letter, n in sorted(r.get('whl_by_letter', {}).items()):
 " || true
 
 log ""
-log "===== 仓库结构（顶层 + 二级目录）====="
-find "$DIST_DIR" -maxdepth 3 -type d 2>/dev/null | sort | sed 's/^/  /' || true
-
-log ""
 log "产物: $DIST_DIR/"
-log "  apt-repo/  $(find "$DIST_DIR/apt-repo" -name 'Packages' 2>/dev/null | wc -l) 个 Packages 文件"
+log "  apt-repo/  $(find "$DIST_DIR/apt-repo" -name 'Packages' 2>/dev/null | wc -l) 个 Packages"
 log "  pip-repo/  $(find "$DIST_DIR/pip-repo" -name 'index.html' 2>/dev/null | wc -l) 个 index.html"
 log ""
 log "下一步: 部署 dist/apt-repo/ + dist/pip-repo/ 到 gh-pages 分支"

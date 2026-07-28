@@ -1,65 +1,76 @@
 name: organize-repo
 
-# 手动触发的整理脚本：扫描本仓库所有 Release 资产，按首字母归档到 gh-pages 分支
-# 用途:
-#   1. 历史资产迁移（v0.1.4/v0.2.0/v0.3.0 等老 release 的 .deb/.whl 也按首字母归档）
-#   2. CI 出 bug 后的修复整理（手动重跑）
-#   3. 全量重生成 Packages/Release/InRelease 元数据
+# 整理 release 资产，生成 apt + pip 索引部署到 gh-pages
 #
-# 触发: workflow_dispatch（仓库 owner 在 Actions 页面手动 Run workflow）
-#       可选参数 SIGN_RELEASE: 是否签名 Release（需 haisa-des-bootstrap Secret HAISADES_GPG_PRIVATE_KEY
-#       在本仓库也注入同名的 Secret）
+# 触发方式:
+#   1. workflow_dispatch（手动）—— 仓库 owner 在 Actions 页面 Run workflow
+#   2. repository_dispatch（自动）—— bootstrap CI 发版后调用
+#      bootstrap CI 调用方式:
+#        gh api repos/XION-HN/haisa-des-repo/dispatches \
+#          -f event_type=organize-repo \
+#          -f client_payload[release_tag]=v0.5.0
+#
+# 整理流程（全量重建 + 并行扫描）:
+#   1. 扫描所有 release（pip-a ~ pip-z，并行 8 并发）
+#   2. 全量重建 gh-pages 索引（apt-repo/ + pip-repo/）
+#   3. 清空 gh-pages 旧内容，部署新索引
+#
+# Release 布局:
+#   固定 26 个 tag: pip-a / pip-b / ... / pip-z
+#   bootstrap CI 上传资产时按首字母归到对应 release
 
 on:
   workflow_dispatch:
     inputs:
-      only_latest:
-        description: 'true=仅整理最新 release；false=整理所有 release（含历史 v0.1.x/v0.2.x/v0.3.x）'
-        required: false
-        type: boolean
-        default: true
       sign_release:
-        description: '是否 GPG 签名 Release（InRelease + Release.gpg）'
+        description: '是否 GPG 签名 apt Release（需 Secret HAISADES_GPG_PRIVATE_KEY）'
         required: false
         type: boolean
         default: false
       keep_old_gh_pages:
-        description: '保留 gh-pages 现有非 apt-repo/pip-repo 文件（如已存在的 README）'
+        description: '保留 gh-pages 现有非 apt-repo/pip-repo 文件'
         required: false
         type: boolean
         default: false
+  repository_dispatch:
+    types: [organize-repo]
 
 permissions:
-  contents: write   # 需写 gh-pages 分支
-  actions: read      # 需读 release 列表
+  contents: write   # push gh-pages
+  actions: read    # 读 release 列表
 
 jobs:
   organize:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            gnupg python3 git curl jq
-          gh --version || echo "gh CLI 缺失（actions 环境应自带）"
+          sudo apt-get install -y --no-install-recommends gnupg python3 git curl jq
+          gh --version || echo "gh CLI 缺失"
+
+      - name: Show trigger info
+        env:
+          EVENT_TYPE: ${{ github.event.action }}
+          CLIENT_TAG: ${{ github.event.client_payload.release_tag }}
+        run: |
+          echo "触发方式: ${EVENT_TYPE:-workflow_dispatch}"
+          echo "客户端 payload release_tag: ${CLIENT_TAG:-（无）}"
+          echo "GITHUB_REF: $GITHUB_REF"
 
       - name: Run organize-repo.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          ONLY_LATEST: ${{ inputs.only_latest }}
         run: |
           set -e
-          # GITHUB_TOKEN 默认有 contents:read + actions:read，足够扫描 releases
-          # 但 push gh-pages 需要 contents:write（permissions 已配置）
-          echo "ONLY_LATEST=${ONLY_LATEST:-true}"
           ./scripts/organize-repo.sh
 
       - name: Sign Release (optional)
-        if: ${{ inputs.sign_release }}
+        if: ${{ github.event.inputs.sign_release == 'true' }}
         env:
           HAISADES_GPG_PRIVATE_KEY: ${{ secrets.HAISADES_GPG_PRIVATE_KEY }}
         run: |
@@ -68,14 +79,13 @@ jobs:
             echo "::warning::secrets.HAISADES_GPG_PRIVATE_KEY 未配置，跳过签名"
             exit 0
           fi
-          # 复用 haisa-des-bootstrap 的 make-keyring.sh（clone 浅拷贝）
           git clone --quiet --depth 1 \
             https://github.com/XION-HN/haisa-des-bootstrap.git /tmp/bootstrap-repo
           printf '%s' "$HAISADES_GPG_PRIVATE_KEY" | /tmp/bootstrap-repo/build-system/make-keyring.sh import-private
           /tmp/bootstrap-repo/build-system/make-keyring.sh sign dist/apt-repo/dists/stable/Release
           rm -rf /tmp/bootstrap-repo
 
-      - name: Upload organize report artifact
+      - name: Upload organize report
         uses: actions/upload-artifact@v4
         with:
           name: organize-report
@@ -92,7 +102,6 @@ jobs:
           git config --global user.email "ci@haisa-des.local"
 
           CLONE_DIR="$(mktemp -d)"
-          # 浅克隆 gh-pages（若不存在，创建 orphan 分支）
           if ! git clone --quiet --depth 1 --branch gh-pages \
               "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" \
               "$CLONE_DIR" 2>/dev/null; then
@@ -107,34 +116,25 @@ jobs:
 
           cd "$CLONE_DIR"
 
-          KEEP_OLD="${{ inputs.keep_old_gh_pages }}"
+          KEEP_OLD="${{ github.event.inputs.keep_old_gh_pages }}"
           if [ "$KEEP_OLD" != "true" ]; then
             echo "清空旧 gh-pages 内容（保留 .git）..."
-            # 不动 .git，删除其他所有文件
             find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           fi
 
-          # 拷新构建的 apt-repo/ 和 pip-repo/
           cp -r "$GITHUB_WORKSPACE/dist/apt-repo" ./apt-repo
           cp -r "$GITHUB_WORKSPACE/dist/pip-repo" ./pip-repo
 
-          # 顶层 README（用 printf 避免 YAML 缩进污染内容）
           printf '%s\n' \
             "# haisa-des repository (gh-pages)" \
             "" \
-            "Auto-organized from GitHub Releases by organize-repo.yml workflow." \
+            "Auto-organized by organize-repo.yml workflow." \
             "Last run: $(date -u +%Y-%m-%dT%H:%M:%SZ) (run #$GITHUB_RUN_ID)" \
             "" \
             "## Layout" \
             "" \
             "- \`apt-repo/\` — Debian package repository" \
-            "  - \`dists/stable/Release\` (+ InRelease / Release.gpg if signed)" \
-            "  - \`dists/stable/main/binary-aarch64/Packages\` (+ .gz)" \
-            "  - \`pool/main/<首字母>/<包名>/<deb>\`" \
-            "" \
             "- \`pip-repo/\` — PEP 503 Python simple index" \
-            "  - \`simple/index.html\`" \
-            "  - \`simple/<首字母>/<规范化包名>/index.html\` + wheel files" \
             "" \
             "## Sources" \
             "" \
@@ -146,13 +146,13 @@ jobs:
           if git diff --cached --quiet; then
             echo "gh-pages 无变化，跳过 push"
           else
-            DEB_COUNT=$(find apt-repo -name '*.deb' | wc -l)
-            WHL_COUNT=$(find pip-repo -name '*.whl' | wc -l)
+            DEB_COUNT=$(find apt-repo -name '*.deb' 2>/dev/null | wc -l)
+            WHL_COUNT=$(find pip-repo -name '*.whl' 2>/dev/null | wc -l)
             git commit -m "chore(gh-pages): organize all release assets
 
-          - Triggered by: workflow_dispatch (run #$GITHUB_RUN_ID)
-          - apt-repo: ${DEB_COUNT} debs
-          - pip-repo: ${WHL_COUNT} wheels"
+          - Triggered by: ${{ github.event_name }}
+          - apt-repo: ${DEB_COUNT} debs indexed
+          - pip-repo: ${WHL_COUNT} wheels indexed"
             git push --quiet origin gh-pages
             echo "✓ gh-pages 已部署"
           fi
