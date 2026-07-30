@@ -1,36 +1,3 @@
-Package: dpkg
-Version: 1.22.22
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: dpkg package (from release pip-d)
-Filename: pool/main/d/dpkg/dpkg_1.22.22_aarch64.deb
-Size: 1206296
-MD5sum: aa954f589c83d041533c18139a064c02
-SHA256: 81de8b1f67c7dd1e1cf3d17a25d5f892211b4bc1bc51de1963b66483c33388b8
-
-Package: freetype
-Version: 2.13.3
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: freetype package (from release pip-f)
-Filename: pool/main/f/freetype/freetype_2.13.3_aarch64.deb
-Size: 582800
-MD5sum: c4776a68085ae69bfa82eb79872b0586
-SHA256: 4d04c762f2c5f6198c1bea4f7ffa24bcfec1502e51e76c97c8298dbfcc435b58
-
-Package: gmp
-Version: 6.3.0
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: gmp package (from release pip-g)
-Filename: pool/main/g/gmp/gmp_6.3.0_aarch64.deb
-Size: 443172
-MD5sum: 699068a43cad59b07768428eeb565298
-SHA256: f22e1db3544647754e184eba8e8bb289e842c341ccee856c8de679d8cc6cdd40
-
 Package: bash
 Version: 5.2.37
 Architecture: aarch64
@@ -53,6 +20,17 @@ Size: 235450
 MD5sum: b830fb08d03a2588e5f43c41d6aa4274
 SHA256: 69e3af2e539c1485b465fcc8ba8143a967431618f6ae542e8b358d791ecfe307
 
+Package: freetype
+Version: 2.13.3
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: freetype package (from release pip-f)
+Filename: pool/main/f/freetype/freetype_2.13.3_aarch64.deb
+Size: 582800
+MD5sum: c4776a68085ae69bfa82eb79872b0586
+SHA256: 4d04c762f2c5f6198c1bea4f7ffa24bcfec1502e51e76c97c8298dbfcc435b58
+
 Package: expat
 Version: 2.6.2
 Architecture: aarch64
@@ -63,17 +41,6 @@ Filename: pool/main/e/expat/expat_2.6.2_aarch64.deb
 Size: 131680
 MD5sum: 44cf19163d1c2c6eb0a78363e471d5d2
 SHA256: a0d7004e48ddf9a4b50b94d15e626d238fc6421e7a4f654acd06600a282afe45
-
-Package: apt
-Version: 2.8.1
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: apt package (from release pip-a)
-Filename: pool/main/a/apt/apt_2.8.1_aarch64.deb
-Size: 1942128
-MD5sum: e072ad52dc16185e93e2e083e0c28c1d
-SHA256: e5c715b46e591c865fa8b0a92a55d5b4fd21a239343f5beb5e9064381606ef31
 
 Package: ca-certificates
 Version: 2025-07-15
@@ -96,6 +63,50 @@ Filename: pool/main/c/curl/curl_8.14.1_aarch64.deb
 Size: 474706
 MD5sum: 8629ba4d86a09ea6fa2810a7bde3093a
 SHA256: f1141eca80b3c9a69a6199b1cf0f2c834c496c887a3fc5d43f67e26039099328
+
+Package: dpkg
+Version: 1.22.22
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: dpkg package (from release pip-d)
+Filename: pool/main/d/dpkg/dpkg_1.22.22_aarch64.deb
+Size: 1206296
+MD5sum: aa954f589c83d041533c18139a064c02
+SHA256: 81de8b1f67c7dd1e1cf3d17a25d5f892211b4bc1bc51de1963b66483c33388b8
+
+Package: apt
+Version: 2.8.1
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: apt package (from release pip-a)
+Filename: pool/main/a/apt/apt_2.8.1_aarch64.deb
+Size: 1942128
+MD5sum: e072ad52dc16185e93e2e083e0c28c1d
+SHA256: e5c715b46e591c865fa8b0a92a55d5b4fd21a239343f5beb5e9064381606ef31
+
+Package: gmp
+Version: 6.3.0
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: gmp package (from release pip-g)
+Filename: pool/main/g/gmp/gmp_6.3.0_aarch64.deb
+Size: 443172
+MD5sum: 699068a43cad59b07768428eeb565298
+SHA256: f22e1db3544647754e184eba8e8bb289e842c341ccee856c8de679d8cc6cdd40
+
+Package: openssl
+Version: 3.5.2
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: openssl package (from release pip-o)
+Filename: pool/main/o/openssl/openssl_3.5.2_aarch64.deb
+Size: 7775004
+MD5sum: a214732fdd12d2ce5d0ad9462bf95b21
+SHA256: 4b61522e1fb138bf7106918a653172c76c31d8362bc34a7593db25f012184d38
 
 Package: libcxx-shared
 Version: r29.0.14206865
@@ -239,17 +250,6 @@ Filename: pool/main/libu/libunistring/libunistring_1.3_aarch64.deb
 Size: 1030454
 MD5sum: 4d95d6d166e32e3045da5de18c140776
 SHA256: 59202546dcbfe2321c77b9d79562071ca9e230dbe7b295bd8c76fdf6402d84b1
-
-Package: openssl
-Version: 3.5.2
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: openssl package (from release pip-o)
-Filename: pool/main/o/openssl/openssl_3.5.2_aarch64.deb
-Size: 7775004
-MD5sum: a214732fdd12d2ce5d0ad9462bf95b21
-SHA256: 4b61522e1fb138bf7106918a653172c76c31d8362bc34a7593db25f012184d38
 
 Package: ncurses
 Version: 6.5
