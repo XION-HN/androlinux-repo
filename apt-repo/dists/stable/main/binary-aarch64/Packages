@@ -1,39 +1,3 @@
-Package: freetype
-Version: 2.13.3
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: freetype package (from release pip-f)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-f/freetype_2.13.3_aarch64.deb
-Size: 582808
-
-Package: expat
-Version: 2.6.2
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: expat package (from release pip-e)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-e/expat_2.6.2_aarch64.deb
-Size: 131664
-
-Package: apt
-Version: 2.8.1
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: apt package (from release pip-a)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-a/apt_2.8.1_aarch64.deb
-Size: 1942134
-
-Package: dpkg
-Version: 1.22.22
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: dpkg package (from release pip-d)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-d/dpkg_1.22.22_aarch64.deb
-Size: 1206274
-
 Package: bash
 Version: 5.2.37
 Architecture: aarch64
@@ -41,7 +5,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: bash package (from release pip-b)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-b/bash_5.2.37_aarch64.deb
-Size: 1342344
+Size: 1342340
 
 Package: bzip2
 Version: 1.0.8
@@ -50,7 +14,25 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: bzip2 package (from release pip-b)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-b/bzip2_1.0.8_aarch64.deb
-Size: 235434
+Size: 235450
+
+Package: apt
+Version: 2.8.1
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: apt package (from release pip-a)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-a/apt_2.8.1_aarch64.deb
+Size: 1942340
+
+Package: dpkg
+Version: 1.22.22
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: dpkg package (from release pip-d)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-d/dpkg_1.22.22_aarch64.deb
+Size: 1206278
 
 Package: gmp
 Version: 6.3.0
@@ -59,7 +41,25 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: gmp package (from release pip-g)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-g/gmp_6.3.0_aarch64.deb
-Size: 443176
+Size: 443184
+
+Package: expat
+Version: 2.6.2
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: expat package (from release pip-e)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-e/expat_2.6.2_aarch64.deb
+Size: 131658
+
+Package: freetype
+Version: 2.13.3
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: freetype package (from release pip-f)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-f/freetype_2.13.3_aarch64.deb
+Size: 582848
 
 Package: ca-certificates
 Version: 2025-07-15
@@ -77,16 +77,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: curl package (from release pip-c)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-c/curl_8.14.1_aarch64.deb
-Size: 474730
-
-Package: openssl
-Version: 3.5.2
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: openssl package (from release pip-o)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-o/openssl_3.5.2_aarch64.deb
-Size: 7774918
+Size: 474728
 
 Package: libcxx-shared
 Version: r29.0.14206865
@@ -95,7 +86,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libcxx-shared package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libcxx-shared_r29.0.14206865_aarch64.deb
-Size: 2380150
+Size: 2380176
 
 Package: libffi
 Version: 3.4.6
@@ -104,7 +95,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libffi package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libffi_3.4.6_aarch64.deb
-Size: 38926
+Size: 38928
 
 Package: libgcrypt
 Version: 1.11.0
@@ -122,7 +113,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libgnutls package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libgnutls_3.8.9_aarch64.deb
-Size: 1099728
+Size: 1099732
 
 Package: libgpg-error
 Version: 1.51
@@ -140,7 +131,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libiconv package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libiconv_1.18_aarch64.deb
-Size: 716036
+Size: 716038
 
 Package: libidn2
 Version: 2.3.7
@@ -149,7 +140,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libidn2 package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libidn2_2.3.7_aarch64.deb
-Size: 89768
+Size: 89770
 
 Package: libjpeg-turbo
 Version: 3.0.4
@@ -158,7 +149,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libjpeg-turbo package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libjpeg-turbo_3.0.4_aarch64.deb
-Size: 2541802
+Size: 2541648
 
 Package: liblz4
 Version: 1.10.0
@@ -167,7 +158,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: liblz4 package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/liblz4_1.10.0_aarch64.deb
-Size: 105172
+Size: 105168
 
 Package: libmd
 Version: 1.1.0
@@ -176,7 +167,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libmd package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libmd_1.1.0_aarch64.deb
-Size: 39248
+Size: 39244
 
 Package: libpng
 Version: 1.6.44
@@ -185,7 +176,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libpng package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libpng_1.6.44_aarch64.deb
-Size: 244534
+Size: 244516
 
 Package: libtasn1
 Version: 4.20.0
@@ -194,7 +185,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libtasn1 package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libtasn1_4.20.0_aarch64.deb
-Size: 64718
+Size: 64714
 
 Package: libunistring
 Version: 1.3
@@ -203,7 +194,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: libunistring package (from release pip-l)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-l/libunistring_1.3_aarch64.deb
-Size: 1030448
+Size: 1030446
 
 Package: ncurses
 Version: 6.5
@@ -212,7 +203,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: ncurses package (from release pip-n)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-n/ncurses_6.5_aarch64.deb
-Size: 952288
+Size: 952278
 
 Package: nettle
 Version: 3.10
@@ -221,7 +212,16 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: nettle package (from release pip-n)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-n/nettle_3.10_aarch64.deb
-Size: 882168
+Size: 882188
+
+Package: openssl
+Version: 3.5.2
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: openssl package (from release pip-o)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-o/openssl_3.5.2_aarch64.deb
+Size: 7774932
 
 Package: p11-kit
 Version: 0.25.5
@@ -230,7 +230,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: p11-kit package (from release pip-p)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-p/p11-kit_0.25.5_aarch64.deb
-Size: 3149902
+Size: 3149896
 
 Package: python
 Version: 3.13.14
@@ -239,7 +239,16 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: python package (from release pip-p)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-p/python_3.13.14_aarch64.deb
-Size: 41501922
+Size: 41501438
+
+Package: readline
+Version: 8.2
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Priority: optional
+Description: readline package (from release pip-r)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-r/readline_8.2_aarch64.deb
+Size: 349596
 
 Package: sdl2
 Version: 2.30.10
@@ -248,7 +257,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: sdl2 package (from release pip-s)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-s/sdl2_2.30.10_aarch64.deb
-Size: 2187300
+Size: 2187304
 
 Package: sdl2_image
 Version: 2.8.2
@@ -257,7 +266,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: sdl2_image package (from release pip-s)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-s/sdl2_image_2.8.2_aarch64.deb
-Size: 112130
+Size: 112126
 
 Package: sdl2_mixer
 Version: 2.8.0
@@ -275,7 +284,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: sdl2_ttf package (from release pip-s)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-s/sdl2_ttf_2.22.0_aarch64.deb
-Size: 423232
+Size: 423238
 
 Package: sqlite
 Version: 3.46.1
@@ -284,16 +293,16 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: sqlite package (from release pip-s)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-s/sqlite_3.46.1_aarch64.deb
-Size: 2043446
+Size: 2043448
 
-Package: readline
-Version: 8.2
+Package: toybox
+Version: 0.8.12
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
-Description: readline package (from release pip-r)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-r/readline_8.2_aarch64.deb
-Size: 349600
+Description: toybox package (from release pip-t)
+Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-t/toybox_0.8.12_aarch64.deb
+Size: 315524
 
 Package: xxhash
 Version: 0.8.3
@@ -311,16 +320,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: xz package (from release pip-x)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-x/xz_5.6.2_aarch64.deb
-Size: 241928
-
-Package: toybox
-Version: 0.8.12
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: toybox package (from release pip-t)
-Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-t/toybox_0.8.12_aarch64.deb
-Size: 315638
+Size: 241932
 
 Package: zlib
 Version: 1.3.1
@@ -329,7 +329,7 @@ Maintainer: haisa-des <noreply@haisa-des.local>
 Priority: optional
 Description: zlib package (from release pip-z)
 Filename: https://github.com/XION-HN/haisa-des-repo/releases/download/pip-z/zlib_1.3.1_aarch64.deb
-Size: 148372
+Size: 148376
 
 Package: zstd
 Version: 1.5.7

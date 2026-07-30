@@ -2,13 +2,13 @@ Origin: haisa-des repository
 Label: haisa-des
 Suite: stable
 Codename: stable
-Date: Thu, 30 Jul 2026 03:42:37 UTC
+Date: Thu, 30 Jul 2026 04:19:30 UTC
 Architectures: aarch64
 Components: main
 Description: haisa-des package repository (index-only, files in GitHub Releases)
 MD5Sum:
- b3a1613ccd81e0e006055498e53c257a            10957 main/binary-aarch64/Packages
- 7e07be71e4c202acd46baf1ab3f9223a             1315 main/binary-aarch64/Packages.gz
+ 3f97ae3a576b3a885c352d976cd79574            10957 main/binary-aarch64/Packages
+ 824219ecc2d8a46445b51d3522b84d97             1316 main/binary-aarch64/Packages.gz
 SHA256:
- 7b3ac6203d15202a4a393c94bf76e9913d116f74469fee9bfd89fc5cb6a3afd8            10957 main/binary-aarch64/Packages
- f229832eef3d286da1673aaf65270b81d99f906ada26a27480a9316bad898376             1315 main/binary-aarch64/Packages.gz
+ 189b4e9b268b5b6afbbdd38364b992509136d450edef65f557f86da0ab028c7a            10957 main/binary-aarch64/Packages
+ bac60351d34c9bb8723a3429e2f483dd570f72043d676924c2982d468fbfa149             1316 main/binary-aarch64/Packages.gz
