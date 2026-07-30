@@ -214,6 +214,22 @@ def download_deb(url, dst):
                 import time; time.sleep(2)
     return False
 
+def md5sum_file(path):
+    import hashlib
+    h = hashlib.md5()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def sha256sum_file(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
 entries = []
 downloaded = 0
 download_failed = 0
@@ -236,6 +252,10 @@ for d in deb_entries:
             continue
     # Filename: 相对 apt-repo 根的路径（apt 规范）
     filename_rel = os.path.relpath(deb_path, repo_root)
+    # 计算 MD5sum 和 SHA256（apt 下载校验必需，否则报
+    # "Insufficient information available to perform this download securely"）
+    md5 = md5sum_file(deb_path)
+    sha256 = sha256sum_file(deb_path)
     entry = [
         f"Package: {pkg_name}",
         f"Version: {version}",
@@ -245,6 +265,8 @@ for d in deb_entries:
         f"Description: {pkg_name} package (from release {d['tag']})",
         f"Filename: {filename_rel}",
         f"Size: {d['size']}",
+        f"MD5sum: {md5}",
+        f"SHA256: {sha256}",
     ]
     entries.append("\n".join(entry))
 print(f"  .deb 下载: {downloaded} 成功, {download_failed} 失败")
