@@ -20,6 +20,11 @@ name: organize-repo
 #   bootstrap CI 上传资产时按首字母归到对应 release
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/organize-repo.sh'
+      - '.github/workflows/organize.yml'
   workflow_dispatch:
     inputs:
       sign_release:
