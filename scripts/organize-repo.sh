@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # organize-repo.sh —— 扫描 haisa-des-repo Release 资产，生成索引部署到 gh-pages
 #
-# 设计（index-only 模式 + 并行扫描）:
-#   - gh-pages 只存索引（HTML / Packages / Release），不下载文件本体
-#   - PEP 503 simple/<首字母>/<包名>/index.html 的 href 用 Releases 绝对 URL
-#   - apt Packages 的 Filename 字段用 Releases 绝对 URL
+# 设计（index + pool 模式 + 并行扫描）:
+#   - gh-pages 存索引（HTML / Packages / Release）+ apt 的 .deb pool
+#   - PEP 503 simple/<首字母>/<包名>/index.html 的 href 用 Releases 绝对 URL（pip 支持）
+#   - apt Packages 的 Filename 字段用相对 apt-repo 根的路径（apt 不支持绝对 URL）
+#     .deb 下载到 apt-repo/pool/main/<首字母>/<包名>/ 下
 #   - 并行扫描 26 个 release（xargs -P 8），减少总扫描时间
 #
 # Release 布局（固定 26 个 tag）:
@@ -188,17 +189,53 @@ with open(os.path.join(simple_root, "index.html"), "w") as f:
     f.write("\n".join(top_lines))
 
 # 6. 生成 apt Packages
+# 关键修复: apt 的 Filename 字段不支持绝对 URL，必须用相对仓库根的路径。
+# 之前的注释 "apt 2.8.1 支持绝对 URL" 是错误的——apt 会把绝对 URL 当相对路径，
+# 拼成 <基址>/https://github.com/... 的错误 URL，导致下载失败。
+# 修复: 下载 .deb 到 apt-repo/pool/main/<首字母>/<包名>/ 下，Filename 写相对路径。
 packages_path = os.path.join(dist_dir, "apt-repo", "dists", "stable", "main", "binary-aarch64", "Packages")
 os.makedirs(os.path.dirname(packages_path), exist_ok=True)
 
+repo_root = os.path.join(dist_dir, "apt-repo")
+
 # 从 .deb 文件名提取 Package/Version/Architecture
+import urllib.request
+
+def download_deb(url, dst):
+    """下载 .deb 到 pool 下（带重试）"""
+    for attempt in range(3):
+        try:
+            urllib.request.urlretrieve(url, dst)
+            return True
+        except Exception as e:
+            if attempt == 2:
+                print(f"    ⚠ 下载失败: {url} -> {e}")
+            else:
+                import time; time.sleep(2)
+    return False
+
 entries = []
+downloaded = 0
+download_failed = 0
 for d in deb_entries:
     parts = d["name"].rsplit("_", 2)
     if len(parts) != 3:
         continue
     pkg_name, version, arch_file = parts
     arch = arch_file[:-len(".deb")]
+    # pool 布局: pool/main/<首字母>/<包名>/<deb>
+    pool_dir = os.path.join(repo_root, "pool", "main", d["prefix"], pkg_name)
+    os.makedirs(pool_dir, exist_ok=True)
+    deb_path = os.path.join(pool_dir, d["name"])
+    # 下载 .deb（若已存在且大小匹配则跳过）
+    if not (os.path.isfile(deb_path) and os.path.getsize(deb_path) == d["size"]):
+        if download_deb(d["url"], deb_path):
+            downloaded += 1
+        else:
+            download_failed += 1
+            continue
+    # Filename: 相对 apt-repo 根的路径（apt 规范）
+    filename_rel = os.path.relpath(deb_path, repo_root)
     entry = [
         f"Package: {pkg_name}",
         f"Version: {version}",
@@ -206,10 +243,11 @@ for d in deb_entries:
         "Maintainer: haisa-des <noreply@haisa-des.local>",
         "Priority: optional",
         f"Description: {pkg_name} package (from release {d['tag']})",
-        f"Filename: {d['url']}",  # apt 2.8.1 支持绝对 URL
+        f"Filename: {filename_rel}",
         f"Size: {d['size']}",
     ]
     entries.append("\n".join(entry))
+print(f"  .deb 下载: {downloaded} 成功, {download_failed} 失败")
 
 content = "\n\n".join(entries) + ("\n" if entries else "")
 with open(packages_path, "w") as f:
