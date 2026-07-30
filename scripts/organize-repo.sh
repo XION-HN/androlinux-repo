@@ -233,7 +233,18 @@ def sha256sum_file(path):
 entries = []
 downloaded = 0
 download_failed = 0
+skipped_large = 0
+# GitHub gh-pages 单文件大小限制 100MB。超过的 .deb 不下载到 pool、不进 apt Packages
+# 索引（否则 git push gh-pages 会被拒绝，导致整个 organize 失败）。
+# 这些大包仍保留在 Releases，用户手动下载后本地安装:
+#   curl -O https://github.com/<repo>/releases/download/<tag>/<pkg>.deb
+#   apt install ./<pkg>.deb
+GHPAGES_SIZE_LIMIT = 100 * 1024 * 1024
 for d in deb_entries:
+    if d["size"] > GHPAGES_SIZE_LIMIT:
+        print(f"  ⚠ 跳过 {d['name']} ({d['size']//1024//1024}MB > 100MB gh-pages 限制), 不进 apt 索引（用户从 Releases 手动下载安装）")
+        skipped_large += 1
+        continue
     parts = d["name"].rsplit("_", 2)
     if len(parts) != 3:
         continue
@@ -269,7 +280,7 @@ for d in deb_entries:
         f"SHA256: {sha256}",
     ]
     entries.append("\n".join(entry))
-print(f"  .deb 下载: {downloaded} 成功, {download_failed} 失败")
+print(f"  .deb 下载: {downloaded} 成功, {download_failed} 失败, {skipped_large} 跳过(>100MB)")
 
 content = "\n\n".join(entries) + ("\n" if entries else "")
 with open(packages_path, "w") as f:
