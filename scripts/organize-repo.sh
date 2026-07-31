@@ -201,6 +201,33 @@ repo_root = os.path.join(dist_dir, "apt-repo")
 # 从 .deb 文件名提取 Package/Version/Architecture
 import urllib.request
 
+def parse_deb_control(deb_path):
+    """从 .deb 的 control.tar.gz 提取 control 字段（Depends, Installed-Size 等）"""
+    import subprocess, tarfile, io
+    try:
+        r = subprocess.run(
+            ["ar", "p", deb_path, "control.tar.gz"],
+            capture_output=True, check=True
+        )
+        with tarfile.open(fileobj=io.BytesIO(r.stdout), mode="r:gz") as tar:
+            control_file = tar.extractfile("control")
+            if control_file is None:
+                return {}
+            text = control_file.read().decode("utf-8")
+    except Exception:
+        return {}
+    fields = {}
+    current_key = None
+    for line in text.splitlines():
+        if line.startswith(" ") or line.startswith("\t"):
+            if current_key:
+                fields[current_key] += "\n" + line
+        elif ":" in line:
+            k, _, v = line.partition(":")
+            fields[k.strip()] = v.strip()
+            current_key = k.strip()
+    return fields
+
 def download_deb(url, dst):
     """下载 .deb 到 pool 下（带重试）"""
     for attempt in range(3):
@@ -267,18 +294,25 @@ for d in deb_entries:
     # "Insufficient information available to perform this download securely"）
     md5 = md5sum_file(deb_path)
     sha256 = sha256sum_file(deb_path)
+    # 从 .deb 提取 control 字段（Depends, Installed-Size, Description）
+    # 不从文件名猜，直接解析 ar 归档里的 control.tar.gz
+    ctrl_fields = parse_deb_control(deb_path)
     entry = [
         f"Package: {pkg_name}",
         f"Version: {version}",
         f"Architecture: {arch}",
-        "Maintainer: haisa-des <noreply@haisa-des.local>",
-        "Priority: optional",
-        f"Description: {pkg_name} package (from release {d['tag']})",
-        f"Filename: {filename_rel}",
-        f"Size: {d['size']}",
-        f"MD5sum: {md5}",
-        f"SHA256: {sha256}",
+        f"Maintainer: {ctrl_fields.get('Maintainer', 'haisa-des <noreply@haisa-des.local>')}",
     ]
+    if "Installed-Size" in ctrl_fields:
+        entry.append(f"Installed-Size: {ctrl_fields['Installed-Size']}")
+    if "Depends" in ctrl_fields:
+        entry.append(f"Depends: {ctrl_fields['Depends']}")
+    entry.append(f"Priority: {ctrl_fields.get('Priority', 'optional')}")
+    entry.append(f"Description: {ctrl_fields.get('Description', pkg_name + ' package')}")
+    entry.append(f"Filename: {filename_rel}")
+    entry.append(f"Size: {d['size']}")
+    entry.append(f"MD5sum: {md5}")
+    entry.append(f"SHA256: {sha256}")
     entries.append("\n".join(entry))
 print(f"  .deb 下载: {downloaded} 成功, {download_failed} 失败, {skipped_large} 跳过(>100MB)")
 
