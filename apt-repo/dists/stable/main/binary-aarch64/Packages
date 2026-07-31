@@ -1,86 +1,12 @@
-Package: bash
-Version: 5.2.37
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: bash package (from release pip-b)
-Filename: pool/main/b/bash/bash_5.2.37_aarch64.deb
-Size: 1342344
-MD5sum: f0cc4d187834564a0d91cd9aaaf9ae6b
-SHA256: fd9c73d06893ae2a9666f17423e3b4e538277fab946dbcedb9ef7aff6386ff2d
-
-Package: bzip2
-Version: 1.0.8
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: bzip2 package (from release pip-b)
-Filename: pool/main/b/bzip2/bzip2_1.0.8_aarch64.deb
-Size: 235440
-MD5sum: 59339217bb22c935eb0e3fe81f221ef6
-SHA256: 9852d768ce36e54feedc949129bbe2c73632e06952b507794aed164cb01657bb
-
-Package: freetype
-Version: 2.13.3
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: freetype package (from release pip-f)
-Filename: pool/main/f/freetype/freetype_2.13.3_aarch64.deb
-Size: 582798
-MD5sum: ce0d9775678b868b1f6cb833f3d96595
-SHA256: 4da171ac574a2c0530ac61064567098ac9d0ed9a5b6f2e678dfd10bc18e4325f
-
-Package: apt
-Version: 2.8.1
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: apt package (from release pip-a)
-Filename: pool/main/a/apt/apt_2.8.1_aarch64.deb
-Size: 1942146
-MD5sum: 4b0964c8c6b229909c9a3e4e69b9fbaa
-SHA256: a861c966da268cea0927b238ee678ee8fed913f183a5ee05b7ec97ad4752d628
-
-Package: dpkg
-Version: 1.22.22
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: dpkg package (from release pip-d)
-Filename: pool/main/d/dpkg/dpkg_1.22.22_aarch64.deb
-Size: 1206314
-MD5sum: e15049d1530a3bbb6c939a1658fd69b0
-SHA256: 43aa41cd604d87e7142d043e9edc501489d34ceef7b46bd2352697a202054616
-
-Package: gmp
-Version: 6.3.0
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: gmp package (from release pip-g)
-Filename: pool/main/g/gmp/gmp_6.3.0_aarch64.deb
-Size: 443176
-MD5sum: 83c1a92b8d77426fb3a17fa02fcaa213
-SHA256: 3caed3ed792a6e7dca1ff26b5bfc6ba8e2ac2485a59bfcb65d27743966095cb2
-
-Package: expat
-Version: 2.6.2
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: expat package (from release pip-e)
-Filename: pool/main/e/expat/expat_2.6.2_aarch64.deb
-Size: 131670
-MD5sum: 4bce7267f5de6f742f5d7e640cdecfbb
-SHA256: 45ad32f066866dadc371c9cf8b3886d279993a288a0f16703089943e23d4574c
-
 Package: ca-certificates
 Version: 2025-07-15
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 456
 Priority: optional
-Description: ca-certificates package (from release pip-c)
+Description: ca-certificates package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/c/ca-certificates/ca-certificates_2025-07-15_aarch64.deb
 Size: 254548
 MD5sum: 2e4e4978afa020cd5ab10ffa68767dd9
@@ -90,173 +16,128 @@ Package: curl
 Version: 8.14.1
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1232
+Depends: zlib,openssl,ca-certificates
 Priority: optional
-Description: curl package (from release pip-c)
+Description: curl package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/c/curl/curl_8.14.1_aarch64.deb
 Size: 474714
 MD5sum: cf7df37f3d75302479a201d33359c663
 SHA256: f1aee5790766a59a87a597009e2085cf3ae9513d49ce3b889e5611328c3caaa4
 
-Package: libcxx-shared
-Version: r29.0.14206865
+Package: apt
+Version: 2.8.1
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 5476
+Depends: dpkg,liblz4,zstd,xxhash,libiconv,libgcrypt,libgnutls,zlib,bzip2,xz,libcxx-shared
 Priority: optional
-Description: libcxx-shared package (from release pip-l)
-Filename: pool/main/libc/libcxx-shared/libcxx-shared_r29.0.14206865_aarch64.deb
-Size: 2380152
-MD5sum: 9dfa433075c1f35ad0f9d82bb68fe600
-SHA256: 5c9d27628a6a873e2597e923e391ef2cc7e3b0462931cf351342895ea6dcfcb2
+Description: apt package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/a/apt/apt_2.8.1_aarch64.deb
+Size: 1942146
+MD5sum: 4b0964c8c6b229909c9a3e4e69b9fbaa
+SHA256: a861c966da268cea0927b238ee678ee8fed913f183a5ee05b7ec97ad4752d628
 
-Package: libffi
-Version: 3.4.6
+Package: freetype
+Version: 2.13.3
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1784
+Depends: zlib,libpng,bzip2
 Priority: optional
-Description: libffi package (from release pip-l)
-Filename: pool/main/libf/libffi/libffi_3.4.6_aarch64.deb
-Size: 38926
-MD5sum: ab951df4f1e69080481eafb55baf9244
-SHA256: f844a59ec3f6ae9c513ffe8fe328b752000284dce3ab6c69eaa24f83660c3fbc
+Description: freetype package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/f/freetype/freetype_2.13.3_aarch64.deb
+Size: 582798
+MD5sum: ce0d9775678b868b1f6cb833f3d96595
+SHA256: 4da171ac574a2c0530ac61064567098ac9d0ed9a5b6f2e678dfd10bc18e4325f
 
-Package: libgcrypt
-Version: 1.11.0
+Package: bash
+Version: 5.2.37
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 4192
+Depends: ncurses
 Priority: optional
-Description: libgcrypt package (from release pip-l)
-Filename: pool/main/libg/libgcrypt/libgcrypt_1.11.0_aarch64.deb
-Size: 615036
-MD5sum: 1b6b3aca13965a088c9d21afc79d652c
-SHA256: ade3acbe10c21b425bd71f6799d91ce5c28ff67a8b60f09fdbe1320dc2817e4d
+Description: bash package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/b/bash/bash_5.2.37_aarch64.deb
+Size: 1342344
+MD5sum: f0cc4d187834564a0d91cd9aaaf9ae6b
+SHA256: fd9c73d06893ae2a9666f17423e3b4e538277fab946dbcedb9ef7aff6386ff2d
 
-Package: libgnutls
-Version: 3.8.9
+Package: bzip2
+Version: 1.0.8
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 568
 Priority: optional
-Description: libgnutls package (from release pip-l)
-Filename: pool/main/libg/libgnutls/libgnutls_3.8.9_aarch64.deb
-Size: 1099724
-MD5sum: 06a0a900595407ef31dd788f5d1362cd
-SHA256: e370918207651f7943e64e894fd3c8e324d8ba5426d71786d343a5320cd5c3fd
+Description: bzip2 package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/b/bzip2/bzip2_1.0.8_aarch64.deb
+Size: 235440
+MD5sum: 59339217bb22c935eb0e3fe81f221ef6
+SHA256: 9852d768ce36e54feedc949129bbe2c73632e06952b507794aed164cb01657bb
 
-Package: libgpg-error
-Version: 1.51
+Package: gmp
+Version: 6.3.0
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1228
 Priority: optional
-Description: libgpg-error package (from release pip-l)
-Filename: pool/main/libg/libgpg-error/libgpg-error_1.51_aarch64.deb
-Size: 139014
-MD5sum: 13d7413052dfb09d06478f07b5e3a931
-SHA256: 87bdbd1dd51c4280a012fb959594de7e01ba86e16663ef2cc66aca2d27bee3ca
+Description: gmp package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/g/gmp/gmp_6.3.0_aarch64.deb
+Size: 443176
+MD5sum: 83c1a92b8d77426fb3a17fa02fcaa213
+SHA256: 3caed3ed792a6e7dca1ff26b5bfc6ba8e2ac2485a59bfcb65d27743966095cb2
 
-Package: libiconv
-Version: 1.18
+Package: expat
+Version: 2.6.2
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 428
 Priority: optional
-Description: libiconv package (from release pip-l)
-Filename: pool/main/libi/libiconv/libiconv_1.18_aarch64.deb
-Size: 716194
-MD5sum: d4029edb6fcee96c24af0f0daf96c656
-SHA256: 41171d83f67c6918e887d5e5f274d6deccb2c6eb2df0cace7f71b1ef3dc724d7
+Description: expat package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/e/expat/expat_2.6.2_aarch64.deb
+Size: 131670
+MD5sum: 4bce7267f5de6f742f5d7e640cdecfbb
+SHA256: 45ad32f066866dadc371c9cf8b3886d279993a288a0f16703089943e23d4574c
 
-Package: libidn2
-Version: 2.3.7
+Package: dpkg
+Version: 1.22.22
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 4972
+Depends: libmd
 Priority: optional
-Description: libidn2 package (from release pip-l)
-Filename: pool/main/libi/libidn2/libidn2_2.3.7_aarch64.deb
-Size: 89768
-MD5sum: d0e171e3bbc16030e4323acd1bb81b2f
-SHA256: c397e64b69c92e35795e4451f733575336106d23c2f7a61453d6a910cfdbc2df
-
-Package: libjpeg-turbo
-Version: 3.0.4
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: libjpeg-turbo package (from release pip-l)
-Filename: pool/main/libj/libjpeg-turbo/libjpeg-turbo_3.0.4_aarch64.deb
-Size: 2541654
-MD5sum: 4db3b76c7558d8e5c678fdab343bbaf9
-SHA256: 1921dedb4333ec3eb4a66bfb157714567dab774a0659a2da5f85da9ed5f29d0a
-
-Package: liblz4
-Version: 1.10.0
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: liblz4 package (from release pip-l)
-Filename: pool/main/libl/liblz4/liblz4_1.10.0_aarch64.deb
-Size: 105172
-MD5sum: 05ccc78e3e49b1e076cdd20c911d54d6
-SHA256: 9262b1275be098b143b5aac528659e88eab42179de6957572ea2c8adc0ba198a
-
-Package: libmd
-Version: 1.1.0
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: libmd package (from release pip-l)
-Filename: pool/main/libm/libmd/libmd_1.1.0_aarch64.deb
-Size: 39248
-MD5sum: f649ac8ba47acb3fad077de317e7b48e
-SHA256: 82a68dd8e70b505d5e311a774bcaef0f557f1b216cdff738154ccea7774d7dde
-
-Package: libpng
-Version: 1.6.44
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: libpng package (from release pip-l)
-Filename: pool/main/libp/libpng/libpng_1.6.44_aarch64.deb
-Size: 244514
-MD5sum: 225a8e55dae14c504a7b97a51e6b59be
-SHA256: 84a7e41b958ff62565cc01631ad333610b8a55297abde2b3140a404643bee231
-
-Package: libtasn1
-Version: 4.20.0
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: libtasn1 package (from release pip-l)
-Filename: pool/main/libt/libtasn1/libtasn1_4.20.0_aarch64.deb
-Size: 64728
-MD5sum: 9a08556154cc1eca7c2c51b191704cac
-SHA256: 96d63e58efd104a815da90b75f7136cd7333242e1cfad39008e0b58a5d44caea
-
-Package: libunistring
-Version: 1.3
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: libunistring package (from release pip-l)
-Filename: pool/main/libu/libunistring/libunistring_1.3_aarch64.deb
-Size: 1030448
-MD5sum: 01ea7d14bd4808bd75e2d742b76de0a5
-SHA256: f29c21bbe87c82811bfe9723e44afb950fda1ef1a8d682a63ec647d571359ad7
-
-Package: openssl
-Version: 3.5.2
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: openssl package (from release pip-o)
-Filename: pool/main/o/openssl/openssl_3.5.2_aarch64.deb
-Size: 7775022
-MD5sum: 38dd18a2e1403c083e8421f6b43e705e
-SHA256: 7fd4695679dae229bc1a276a415b93876f3428daf0ccc9c0497911d728127407
+Description: dpkg package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/d/dpkg/dpkg_1.22.22_aarch64.deb
+Size: 1206314
+MD5sum: e15049d1530a3bbb6c939a1658fd69b0
+SHA256: 43aa41cd604d87e7142d043e9edc501489d34ceef7b46bd2352697a202054616
 
 Package: ncurses
 Version: 6.5
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 5432
 Priority: optional
-Description: ncurses package (from release pip-n)
+Description: ncurses package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/n/ncurses/ncurses_6.5_aarch64.deb
 Size: 952288
 MD5sum: b3600bacf5e2ef8176819457cb816f93
@@ -266,19 +147,228 @@ Package: nettle
 Version: 3.10
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 2720
+Depends: gmp
 Priority: optional
-Description: nettle package (from release pip-n)
+Description: nettle package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/n/nettle/nettle_3.10_aarch64.deb
 Size: 882164
 MD5sum: 7044c9e3332cc5af9ba30678047a8dd8
 SHA256: a826bc78f6181eeaa9adac4024b56122733d3b0f22f05d27044572e68757b1d0
 
+Package: libcxx-shared
+Version: r29.0.14206865
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 9084
+Priority: optional
+Description: libcxx-shared package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libc/libcxx-shared/libcxx-shared_r29.0.14206865_aarch64.deb
+Size: 2380152
+MD5sum: 9dfa433075c1f35ad0f9d82bb68fe600
+SHA256: 5c9d27628a6a873e2597e923e391ef2cc7e3b0462931cf351342895ea6dcfcb2
+
+Package: libffi
+Version: 3.4.6
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 196
+Priority: optional
+Description: libffi package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libf/libffi/libffi_3.4.6_aarch64.deb
+Size: 38926
+MD5sum: ab951df4f1e69080481eafb55baf9244
+SHA256: f844a59ec3f6ae9c513ffe8fe328b752000284dce3ab6c69eaa24f83660c3fbc
+
+Package: libgcrypt
+Version: 1.11.0
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1340
+Depends: libgpg-error
+Priority: optional
+Description: libgcrypt package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libg/libgcrypt/libgcrypt_1.11.0_aarch64.deb
+Size: 615036
+MD5sum: 1b6b3aca13965a088c9d21afc79d652c
+SHA256: ade3acbe10c21b425bd71f6799d91ce5c28ff67a8b60f09fdbe1320dc2817e4d
+
+Package: libgnutls
+Version: 3.8.9
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 2756
+Depends: gmp,nettle,libtasn1,p11-kit,libunistring,libidn2
+Priority: optional
+Description: libgnutls package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libg/libgnutls/libgnutls_3.8.9_aarch64.deb
+Size: 1099724
+MD5sum: 06a0a900595407ef31dd788f5d1362cd
+SHA256: e370918207651f7943e64e894fd3c8e324d8ba5426d71786d343a5320cd5c3fd
+
+Package: libgpg-error
+Version: 1.51
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 476
+Priority: optional
+Description: libgpg-error package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libg/libgpg-error/libgpg-error_1.51_aarch64.deb
+Size: 139014
+MD5sum: 13d7413052dfb09d06478f07b5e3a931
+SHA256: 87bdbd1dd51c4280a012fb959594de7e01ba86e16663ef2cc66aca2d27bee3ca
+
+Package: libiconv
+Version: 1.18
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1152
+Priority: optional
+Description: libiconv package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libi/libiconv/libiconv_1.18_aarch64.deb
+Size: 716194
+MD5sum: d4029edb6fcee96c24af0f0daf96c656
+SHA256: 41171d83f67c6918e887d5e5f274d6deccb2c6eb2df0cace7f71b1ef3dc724d7
+
+Package: libidn2
+Version: 2.3.7
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 212
+Depends: libunistring
+Priority: optional
+Description: libidn2 package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libi/libidn2/libidn2_2.3.7_aarch64.deb
+Size: 89768
+MD5sum: d0e171e3bbc16030e4323acd1bb81b2f
+SHA256: c397e64b69c92e35795e4451f733575336106d23c2f7a61453d6a910cfdbc2df
+
+Package: libjpeg-turbo
+Version: 3.0.4
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 7792
+Priority: optional
+Description: libjpeg-turbo package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libj/libjpeg-turbo/libjpeg-turbo_3.0.4_aarch64.deb
+Size: 2541654
+MD5sum: 4db3b76c7558d8e5c678fdab343bbaf9
+SHA256: 1921dedb4333ec3eb4a66bfb157714567dab774a0659a2da5f85da9ed5f29d0a
+
+Package: liblz4
+Version: 1.10.0
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 284
+Priority: optional
+Description: liblz4 package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libl/liblz4/liblz4_1.10.0_aarch64.deb
+Size: 105172
+MD5sum: 05ccc78e3e49b1e076cdd20c911d54d6
+SHA256: 9262b1275be098b143b5aac528659e88eab42179de6957572ea2c8adc0ba198a
+
+Package: libmd
+Version: 1.1.0
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 192
+Priority: optional
+Description: libmd package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libm/libmd/libmd_1.1.0_aarch64.deb
+Size: 39248
+MD5sum: f649ac8ba47acb3fad077de317e7b48e
+SHA256: 82a68dd8e70b505d5e311a774bcaef0f557f1b216cdff738154ccea7774d7dde
+
+Package: libpng
+Version: 1.6.44
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 732
+Depends: zlib
+Priority: optional
+Description: libpng package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libp/libpng/libpng_1.6.44_aarch64.deb
+Size: 244514
+MD5sum: 225a8e55dae14c504a7b97a51e6b59be
+SHA256: 84a7e41b958ff62565cc01631ad333610b8a55297abde2b3140a404643bee231
+
+Package: libtasn1
+Version: 4.20.0
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 200
+Priority: optional
+Description: libtasn1 package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libt/libtasn1/libtasn1_4.20.0_aarch64.deb
+Size: 64728
+MD5sum: 9a08556154cc1eca7c2c51b191704cac
+SHA256: 96d63e58efd104a815da90b75f7136cd7333242e1cfad39008e0b58a5d44caea
+
+Package: libunistring
+Version: 1.3
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 3372
+Priority: optional
+Description: libunistring package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/libu/libunistring/libunistring_1.3_aarch64.deb
+Size: 1030448
+MD5sum: 01ea7d14bd4808bd75e2d742b76de0a5
+SHA256: f29c21bbe87c82811bfe9723e44afb950fda1ef1a8d682a63ec647d571359ad7
+
+Package: openssl
+Version: 3.5.2
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 23140
+Depends: zlib
+Priority: optional
+Description: openssl package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/o/openssl/openssl_3.5.2_aarch64.deb
+Size: 7775022
+MD5sum: 38dd18a2e1403c083e8421f6b43e705e
+SHA256: 7fd4695679dae229bc1a276a415b93876f3428daf0ccc9c0497911d728127407
+
 Package: p11-kit
 Version: 0.25.5
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 14284
+Depends: libffi,libtasn1
 Priority: optional
-Description: p11-kit package (from release pip-p)
+Description: p11-kit package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/p/p11-kit/p11-kit_0.25.5_aarch64.deb
 Size: 3149908
 MD5sum: ae369249fc0a595d57f01d669cffa433
@@ -288,8 +378,12 @@ Package: python
 Version: 3.13.14
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 149020
+Depends: zlib,openssl,ncurses,readline,libffi,sqlite,bzip2,xz,expat
 Priority: optional
-Description: python package (from release pip-p)
+Description: python package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/p/python/python_3.13.14_aarch64.deb
 Size: 41501592
 MD5sum: 9727aed938b7a52e0e5641f8c4b93a3c
@@ -299,8 +393,12 @@ Package: readline
 Version: 8.2
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1144
+Depends: ncurses
 Priority: optional
-Description: readline package (from release pip-r)
+Description: readline package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/r/readline/readline_8.2_aarch64.deb
 Size: 349610
 MD5sum: 86032803077124904c8ec50821e5c230
@@ -310,8 +408,11 @@ Package: sdl2
 Version: 2.30.10
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 8548
 Priority: optional
-Description: sdl2 package (from release pip-s)
+Description: sdl2 package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2/sdl2_2.30.10_aarch64.deb
 Size: 2187232
 MD5sum: c9f0b1a42167b129abfae21b5c69fd35
@@ -321,8 +422,12 @@ Package: sdl2_image
 Version: 2.8.2
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 308
+Depends: sdl2,libpng,libjpeg-turbo
 Priority: optional
-Description: sdl2_image package (from release pip-s)
+Description: sdl2_image package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2_image/sdl2_image_2.8.2_aarch64.deb
 Size: 112132
 MD5sum: ef3e035cc44caf1ab5e7a0979fa49ee5
@@ -332,8 +437,12 @@ Package: sdl2_mixer
 Version: 2.8.0
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 272
+Depends: sdl2
 Priority: optional
-Description: sdl2_mixer package (from release pip-s)
+Description: sdl2_mixer package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2_mixer/sdl2_mixer_2.8.0_aarch64.deb
 Size: 75580
 MD5sum: 8c3a55bfaf1b4d8225b3e0412add85dc
@@ -343,8 +452,12 @@ Package: sdl2_ttf
 Version: 2.22.0
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 920
+Depends: sdl2,freetype
 Priority: optional
-Description: sdl2_ttf package (from release pip-s)
+Description: sdl2_ttf package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2_ttf/sdl2_ttf_2.22.0_aarch64.deb
 Size: 423232
 MD5sum: b38d98ec2611509dc194398d2500e54d
@@ -354,30 +467,25 @@ Package: sqlite
 Version: 3.46.1
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 4336
 Priority: optional
-Description: sqlite package (from release pip-s)
+Description: sqlite package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sqlite/sqlite_3.46.1_aarch64.deb
 Size: 2043448
 MD5sum: 168ec5c27a99eb4be8e7b85f4ad6c85c
 SHA256: 6525662f5268fc8e24c4d5eb6dfe9f86d043dc4efa105231ac4a9f3f147106cd
 
-Package: toybox
-Version: 0.8.12
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Priority: optional
-Description: toybox package (from release pip-t)
-Filename: pool/main/t/toybox/toybox_0.8.12_aarch64.deb
-Size: 315640
-MD5sum: 801284f554410d9008535668c857556d
-SHA256: f989cb02122f40b81af6fae39a8abc06857a271110911cb4de67897881d1744d
-
 Package: xxhash
 Version: 0.8.3
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 376
 Priority: optional
-Description: xxhash package (from release pip-x)
+Description: xxhash package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/x/xxhash/xxhash_0.8.3_aarch64.deb
 Size: 103386
 MD5sum: 10c7be656b43f9df2961aa7d3ad28f35
@@ -387,19 +495,39 @@ Package: xz
 Version: 5.6.2
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 836
 Priority: optional
-Description: xz package (from release pip-x)
+Description: xz package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/x/xz/xz_5.6.2_aarch64.deb
 Size: 241926
 MD5sum: 2b1345dbe8eb4e354da8e6dc05c9a254
 SHA256: 681527d2de62889342b1f3cac991e4f776400101bcbbdb1f69357f1a03e78dc2
 
+Package: toybox
+Version: 0.8.12
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 540
+Priority: optional
+Description: toybox package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/t/toybox/toybox_0.8.12_aarch64.deb
+Size: 315640
+MD5sum: 801284f554410d9008535668c857556d
+SHA256: f989cb02122f40b81af6fae39a8abc06857a271110911cb4de67897881d1744d
+
 Package: zlib
 Version: 1.3.1
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 392
 Priority: optional
-Description: zlib package (from release pip-z)
+Description: zlib package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/z/zlib/zlib_1.3.1_aarch64.deb
 Size: 148380
 MD5sum: 556061e24576a0ea0a9dbdec66f9350b
@@ -409,8 +537,11 @@ Package: zstd
 Version: 1.5.7
 Architecture: aarch64
 Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1736
 Priority: optional
-Description: zstd package (from release pip-z)
+Description: zstd package
+ .
+ Built by haisa-des-bootstrap CI.
 Filename: pool/main/z/zstd/zstd_1.5.7_aarch64.deb
 Size: 664520
 MD5sum: c2d64af3dd7a0c495f5e102f5da675fd
