@@ -1,3 +1,18 @@
+Package: freetype
+Version: 2.13.3
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1784
+Depends: zlib,libpng,bzip2
+Priority: optional
+Description: freetype package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/f/freetype/freetype_2.13.3_aarch64.deb
+Size: 449928
+MD5sum: b47329ea4ea9b47ed72671032d32b583
+SHA256: 79ba67bd0a8a97ca513a56e45b8b7d172a08492b3eb4e312236a800462b61018
+
 Package: apt
 Version: 2.8.1
 Architecture: aarch64
@@ -9,53 +24,9 @@ Description: apt package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/a/apt/apt_2.8.1_aarch64.deb
-Size: 1099712
-MD5sum: fabd01a2c5e779710165625613e8a2b6
-SHA256: 0fd5f3578b983799334f4ba94e06ad7e00a7cd239902853ee0afdd7455f948c4
-
-Package: dpkg
-Version: 1.22.22
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 4972
-Depends: libmd
-Priority: optional
-Description: dpkg package
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/d/dpkg/dpkg_1.22.22_aarch64.deb
-Size: 669640
-MD5sum: f88d950e35ca050829551f793fa61e70
-SHA256: 65921f08bc1bfb9d17c9f6255103af562e77850e9ddea47983689f43ffc626eb
-
-Package: ca-certificates
-Version: 2025-07-15
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 456
-Priority: optional
-Description: ca-certificates package
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/c/ca-certificates/ca-certificates_2025-07-15_aarch64.deb
-Size: 122792
-MD5sum: f64b8102d65db26aadf12adfbeb753a8
-SHA256: 94e20de14226379623ac588d222cf680b4d804c7e692c30272cf74b97207952b
-
-Package: curl
-Version: 8.14.1
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 1232
-Depends: zlib,openssl,ca-certificates
-Priority: optional
-Description: curl package
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/c/curl/curl_8.14.1_aarch64.deb
-Size: 360358
-MD5sum: 20571e152db89718f9340afcf37d281a
-SHA256: c104c50f0be86829b9f44101d1c4d3ef3f214880329ada99f834b9e21793c116
+Size: 1100026
+MD5sum: 105164c4400d93022272e8fb51511072
+SHA256: 62c0ee7a9994566ad6f381c91f4965883ae6a6f6fc1de2cabcfc04f6b4741c62
 
 Package: bash
 Version: 5.2.37
@@ -68,9 +39,9 @@ Description: bash package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/b/bash/bash_5.2.37_aarch64.deb
-Size: 860260
-MD5sum: b74fd2b98a4024d80ad3dc1ee481ff19
-SHA256: 5b530d2ef671d554c5a14749c4e3d68c2ba6399ea9b3aaa420ec54285dc23ca6
+Size: 859564
+MD5sum: 1becb6323f7af953448a0c2bf8fbc33b
+SHA256: 5cb49555612d8f4e6f9ad3a27c9c1f14e92ed299d9dfb15c55bb1b45ddd612f2
 
 Package: bzip2
 Version: 1.0.8
@@ -82,9 +53,9 @@ Description: bzip2 package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/b/bzip2/bzip2_1.0.8_aarch64.deb
-Size: 63470
-MD5sum: 0544c83a1e4067999fea1c7e65209dd3
-SHA256: 7cd7a938c5549424c615605de7e6c9b9d72abf0cc13002775eea77473e8b389a
+Size: 63438
+MD5sum: 58e4b0cddb4de5b6fd569d46db2017fa
+SHA256: d15f804b6aa9e4d23966147365b1ad313541eb2f87ca21a5ee04fe6c82e274b9
 
 Package: expat
 Version: 2.6.2
@@ -96,9 +67,53 @@ Description: expat package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/e/expat/expat_2.6.2_aarch64.deb
-Size: 104680
-MD5sum: e7cb84b24ebe537b80fd35690f940ef9
-SHA256: 35b19610b41b326ba565ba7bb3bc1de578c35c26d7eaa6df5a6703eda37784ea
+Size: 104716
+MD5sum: 46af44c850e2eaaf8e82bef17d863c7a
+SHA256: eee7f5d0de763e6ff573850f6419d3a75a641045197ae9525e85c56ad4d8b56a
+
+Package: ca-certificates
+Version: 2025-07-15
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 456
+Priority: optional
+Description: ca-certificates package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/c/ca-certificates/ca-certificates_2025-07-15_aarch64.deb
+Size: 122784
+MD5sum: 1f9e4c4b2bc859ee9d1f38cd42024dcf
+SHA256: 1a3de28b2ffd93b408255e4829d55322c7e9ec0337cf5e1c98c1629f6030abeb
+
+Package: curl
+Version: 8.14.1
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 1232
+Depends: zlib,openssl,ca-certificates
+Priority: optional
+Description: curl package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/c/curl/curl_8.14.1_aarch64.deb
+Size: 360662
+MD5sum: d0993a692c51ef635bbf08cf927fb168
+SHA256: 85f643388248809e79d992b707344adf83b0b862f4956e5d4cc7876b7b2e181e
+
+Package: dpkg
+Version: 1.22.22
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 4972
+Depends: libmd
+Priority: optional
+Description: dpkg package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/d/dpkg/dpkg_1.22.22_aarch64.deb
+Size: 669446
+MD5sum: 98f999005467038637c13f9885f22ccd
+SHA256: 8d41748db3dee4239d2118b6fb8ad3e3c30e7bab24f731db38bea8d2e6ae9420
 
 Package: gmp
 Version: 6.3.0
@@ -110,24 +125,9 @@ Description: gmp package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/g/gmp/gmp_6.3.0_aarch64.deb
-Size: 348210
-MD5sum: 81ae26e69e614e79bd4c67a335ebd800
-SHA256: c1a1ea828a46c4eecaed2a68d7d798b459676e1e112e77adfe2eba82f33eb44a
-
-Package: freetype
-Version: 2.13.3
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 1784
-Depends: zlib,libpng,bzip2
-Priority: optional
-Description: freetype package
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/f/freetype/freetype_2.13.3_aarch64.deb
-Size: 449856
-MD5sum: 3c8e8d139fbfd99b9cd0867aab17039f
-SHA256: 9a67b19d9c9ccd52ccbdf712c1a6e174f24908601b591a37c35d41a9849b82ea
+Size: 348128
+MD5sum: 66ff3b19251288d7db75847a43c3c677
+SHA256: 59a78e535ee1e538be0ff16ad2690370d63e7ffe9fb206ccc585234ca11a9035
 
 Package: libcxx-shared
 Version: 29.0.14206865
@@ -139,9 +139,9 @@ Description: libcxx-shared package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libc/libcxx-shared/libcxx-shared_29.0.14206865_aarch64.deb
-Size: 1641058
-MD5sum: 0100fc230429f53aca90327991caed05
-SHA256: 436e97e60514b5722d5537b32728ff8679614ec2f2d650f2ddc6827106e84c4e
+Size: 1642790
+MD5sum: cc3c05e6d5bb429acb8ff48e8581abf4
+SHA256: e8674437b1acc77286073b7b8cbdbd4fc2ff9c1626ce361ea25b26f31a9bd9de
 
 Package: libcxx-shared
 Version: r29.0.14206865
@@ -168,8 +168,8 @@ Description: libffi package
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libf/libffi/libffi_3.4.6_aarch64.deb
 Size: 32324
-MD5sum: dcf853a2105bad73dfb6bd2086434191
-SHA256: a8a713299a58ac22f1648db92fb65c586dacd6b2892a055aa7e70d5e2a757731
+MD5sum: 7fde3dc3079d2575e7501469223ac7f9
+SHA256: d091ed7fb27884aa94b07f0afd6397ae14c44db00fb6fae08975d5665701ee36
 
 Package: libgcrypt
 Version: 1.11.0
@@ -182,9 +182,9 @@ Description: libgcrypt package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libg/libgcrypt/libgcrypt_1.11.0_aarch64.deb
-Size: 479678
-MD5sum: 8e744c91ab295850bb964310264b0008
-SHA256: 7bc4196f1aa588190aefae880019cc77260eae0096b79149eb9a4450c358717b
+Size: 478506
+MD5sum: 873034f7078bb44da7d2e4fd60ff1daa
+SHA256: 26c4cbc8135c137a2b06fcda446689b6bb8b809f889bbc4567b419dc45fbfa71
 
 Package: libgnutls
 Version: 3.8.9
@@ -197,9 +197,9 @@ Description: libgnutls package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libg/libgnutls/libgnutls_3.8.9_aarch64.deb
-Size: 787088
-MD5sum: 79c91d351f7f22b621d7b6bbb47da455
-SHA256: c8729ac28d7b80eb68c98764cc383c611cedc14a916e27b2b85d080f555f9ad3
+Size: 783896
+MD5sum: c902d596e3037a882675bb2f3dc696b0
+SHA256: 396520348414693b2422329c6b2c439c8b8d85640e104e266fd2aa6b72c35599
 
 Package: libgpg-error
 Version: 1.51
@@ -211,9 +211,9 @@ Description: libgpg-error package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libg/libgpg-error/libgpg-error_1.51_aarch64.deb
-Size: 92130
-MD5sum: e9d55c815f51c3dbd5c3f7c19423d84d
-SHA256: b431cecefea229caf0e460b01603d650fa51036561c7d6e6844589764fa6be92
+Size: 92170
+MD5sum: b3be651305fbc2e2b46774cd7b579ab3
+SHA256: afa36d68ce279bcd0df5e0a1622fadc5131a1aaa506f1b1e0bb72e65600196c4
 
 Package: libiconv
 Version: 1.18
@@ -225,9 +225,9 @@ Description: libiconv package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libi/libiconv/libiconv_1.18_aarch64.deb
-Size: 520814
-MD5sum: 7945cef1c70274d81686c48593fba17b
-SHA256: 001bf21262f26ebcc3f0bb7b6336db932cc7821329141697b8a16835b9fcf09b
+Size: 520626
+MD5sum: 5cfb3287c11055c186f85c0121f2411b
+SHA256: c44f93f3a6db9fd6990cc818a7f85bb04057f808a0270e41b4c473a1d57356b5
 
 Package: libidn2
 Version: 2.3.7
@@ -240,9 +240,9 @@ Description: libidn2 package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libi/libidn2/libidn2_2.3.7_aarch64.deb
-Size: 55220
-MD5sum: 0349aa7bd383cca9e4e3440e0c06dbf9
-SHA256: 4f4c57da412c26520da77cfc613cba85256c317fe2410df83adb32beb30fdf95
+Size: 55542
+MD5sum: 6b2e33837a9f776d9087e35db9600ba3
+SHA256: d11791b22cfd3b3194ba0357754e8f027f6f1d1864ba9d5fe79b8ed8172f87b8
 
 Package: libjpeg-turbo
 Version: 3.0.4
@@ -254,9 +254,9 @@ Description: libjpeg-turbo package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libj/libjpeg-turbo/libjpeg-turbo_3.0.4_aarch64.deb
-Size: 1066502
-MD5sum: 6268c2bb4f8572299106fecea5639719
-SHA256: 0fee018142f36668d08e28be476f74440ab84943952017639ec1c5af5b490068
+Size: 1068004
+MD5sum: 26edefdbe0c3de7abe1d373e6a18dc82
+SHA256: b3db3957c59c9b25a331e9f4e95ebe447b4f36a83d247797cd640e5b21bf047d
 
 Package: liblz4
 Version: 1.10.0
@@ -268,9 +268,9 @@ Description: liblz4 package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libl/liblz4/liblz4_1.10.0_aarch64.deb
-Size: 82240
-MD5sum: 07f93c597bd7b36093e0b949f471d20c
-SHA256: 5dbbb6bd09ad078f1aef9e451cfec2b33308b09b83c82f124371ad97e2d594b3
+Size: 82228
+MD5sum: d5247016c6b5b9934785aa2c685e9a5a
+SHA256: fac1d7efdbdc13434626984e6bb6cb2fcf59b6e75b3733fff89bfee031d77aed
 
 Package: libmd
 Version: 1.1.0
@@ -282,9 +282,9 @@ Description: libmd package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libm/libmd/libmd_1.1.0_aarch64.deb
-Size: 30250
-MD5sum: bf738b03dc7904c0c19e5bd8146794a0
-SHA256: 5597d5edd4ab2b3ebf99285d8229ec4cf8e84388840755f87ef1f4d4dc11e00b
+Size: 30216
+MD5sum: 16a2757724bbcd8dcc508246de483afc
+SHA256: 1d17548d01a81557f946ce4034ea8e21c13b8c080371dcd12c0f923bb8e1e4ab
 
 Package: libpng
 Version: 1.6.44
@@ -297,9 +297,9 @@ Description: libpng package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libp/libpng/libpng_1.6.44_aarch64.deb
-Size: 187976
-MD5sum: 324b57f72b04d5507798f641fb725ff4
-SHA256: dacbe7a4a9818ba9a5b14d95ada80d615455a4cc37858d5313d08e6600fd4565
+Size: 187962
+MD5sum: 6990970f40881d7dca42b93b301e5012
+SHA256: 8f4e4e45b2767b2d768825f61490b1f0ac4d23089c450dfe2add1ef25dfaf0ce
 
 Package: libtasn1
 Version: 4.20.0
@@ -311,9 +311,9 @@ Description: libtasn1 package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libt/libtasn1/libtasn1_4.20.0_aarch64.deb
-Size: 50290
-MD5sum: 4a33faa8b0a4e01ff8005d17f922a4e8
-SHA256: 2f08cfdda0c27307073911ac9d25871ead771055982a2a7342752f73d7d69861
+Size: 50278
+MD5sum: 7b539f0af68a205adf3c05a3f8df19d8
+SHA256: aba50f62d46c836d07be62105cd8e4f331fbafb75cc43bc2c864aa8313c09a48
 
 Package: libunistring
 Version: 1.3
@@ -325,39 +325,9 @@ Description: libunistring package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/libu/libunistring/libunistring_1.3_aarch64.deb
-Size: 576864
-MD5sum: 8bcf9858d337a98571c4dee393141e95
-SHA256: b95a2d608f854a439e352e89da8198de5e429a6426403d8e079b3a8861b424de
-
-Package: openjdk-17
-Version: 17.0.20
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 225472
-Depends: libiconv,libjpeg-turbo,zlib,freetype,libpng,expat,ca-certificates
-Priority: optional
-Description: OpenJDK 17 JDK (aarch64, bionic-adapted from Termux)
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/o/openjdk-17/openjdk-17_17.0.20_aarch64.deb
-Size: 96430006
-MD5sum: 28a0fc89b3fb2fc21eea8f66a2370bba
-SHA256: aac0017f2d58aea5b9338001263415e9209104d1f701730f940dbdfcb3c4fa97
-
-Package: openssl
-Version: 3.5.2
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 23140
-Depends: zlib
-Priority: optional
-Description: openssl package
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/o/openssl/openssl_3.5.2_aarch64.deb
-Size: 5333088
-MD5sum: f18db2dfb4ecdac2fce61fd8a4f7064c
-SHA256: 4b0dc8ab7334a1167503200da8e37d1d730f3c65aa35ae662006d1aab9a5a64d
+Size: 567220
+MD5sum: 4f4e7f445f19317beb240f72328d02a0
+SHA256: b8000bb8614e5eb3b2535caa472afbd5f18c6b04709eb9a99e4637ea52b197e2
 
 Package: ncurses
 Version: 6.5
@@ -369,9 +339,9 @@ Description: ncurses package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/n/ncurses/ncurses_6.5_aarch64.deb
-Size: 491380
-MD5sum: cf69ee932dd683706494cc08a691c9dd
-SHA256: de206148f0861b09a53a16563c961bcb41e29ad771e9958aeff1100696c70d9c
+Size: 490528
+MD5sum: c3290eb85a80d81715096f5a5ba6a3d1
+SHA256: 2aef43646029819c77a88a45f00a41349709fbcc2af664a07544ce0f8448fdce
 
 Package: nettle
 Version: 3.10
@@ -384,9 +354,39 @@ Description: nettle package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/n/nettle/nettle_3.10_aarch64.deb
-Size: 675812
-MD5sum: f1b2f43fc27d969d54bb968ddcaad78f
-SHA256: 6c2f95f6b6bbc93c7da32302ae1c7897a6a121a14c63258fd8ff43f63fd91c8c
+Size: 675944
+MD5sum: bd6ca4b8053cd0cccfee1b359940ffef
+SHA256: 6b18cee081c6163cae110d13bf5f2ba1ff8760589bd6d0c633305b4f25d8a9d8
+
+Package: openjdk-17
+Version: 17.0.20
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 225472
+Depends: libiconv,libjpeg-turbo,zlib,freetype,libpng,expat,ca-certificates
+Priority: optional
+Description: OpenJDK 17 JDK (aarch64, bionic-adapted from Termux)
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/o/openjdk-17/openjdk-17_17.0.20_aarch64.deb
+Size: 96436452
+MD5sum: 0793b9756d28d10371771164316402c6
+SHA256: 8c97e14f55960b43fd581c69e6be1138437adceb29c703d203260a21083c54dd
+
+Package: openssl
+Version: 3.5.2
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 23140
+Depends: zlib
+Priority: optional
+Description: openssl package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/o/openssl/openssl_3.5.2_aarch64.deb
+Size: 5335874
+MD5sum: 28bc9ed25e88e40a8b64e77ca5dcda09
+SHA256: 158d2d0a7b0e6fe81ed849b1ed6466e679c2a37df24d2547302f045b34b9c16f
 
 Package: p11-kit
 Version: 0.25.5
@@ -399,9 +399,9 @@ Description: p11-kit package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/p/p11-kit/p11-kit_0.25.5_aarch64.deb
-Size: 1526078
-MD5sum: a5f4975835836dc54e0bc5f46609a401
-SHA256: f04642b630aaff004217355707299a428c436e01e6d557aace725ea35ce0d052
+Size: 1524206
+MD5sum: 901ce667ab2efa94e2eca63db651543b
+SHA256: 6b2113388e218bd4fa7b8ba5742e145eb096b1e67f082ec9fb1b756c66e42d84
 
 Package: python
 Version: 3.13.14
@@ -414,9 +414,9 @@ Description: python package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/p/python/python_3.13.14_aarch64.deb
-Size: 26865544
-MD5sum: b0357efd2a60ab59bc6811d91b3819ef
-SHA256: 2594afb85c28dd5d1d9967e4ec1a297640a37a74a454828d7bb9b33259ec74de
+Size: 26866602
+MD5sum: d2d44975ad143509476148d6244d1bd8
+SHA256: bef1096b783db3610ef48e0b20a18f2d21cf6c33892b4c11914b39f0fd02eedc
 
 Package: readline
 Version: 8.2
@@ -429,9 +429,23 @@ Description: readline package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/r/readline/readline_8.2_aarch64.deb
-Size: 227590
-MD5sum: da036b8e674699093900b151ce24e857
-SHA256: 90fb6b839b5cf633a0d4014e76109083125513fa917692bfe7f17e95dcbf003d
+Size: 227820
+MD5sum: a1f6994fa9107971e54527e930302a25
+SHA256: e7bd6fd22d0eff409741ff9c855074efc20c7d55aab480a0641060c7dadce357
+
+Package: toybox
+Version: 0.8.12
+Architecture: aarch64
+Maintainer: haisa-des <noreply@haisa-des.local>
+Installed-Size: 540
+Priority: optional
+Description: toybox package
+ .
+ Built by haisa-des-bootstrap CI.
+Filename: pool/main/t/toybox/toybox_0.8.12_aarch64.deb
+Size: 263366
+MD5sum: b69d1b668f7d309cbc0a2aace59360e2
+SHA256: b122de4af712aa80c5b55f9fa2386dbe0ece71f616604c99e6aa5a75f82fc4da
 
 Package: sdl2
 Version: 2.30.10
@@ -443,9 +457,9 @@ Description: sdl2 package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2/sdl2_2.30.10_aarch64.deb
-Size: 1514494
-MD5sum: 6f46a73eec0e690efc062cce235a3812
-SHA256: 367a55db9f8f441d7ca94b10d63a82bb01bb2e141826111389a4fcaf720383f7
+Size: 1512990
+MD5sum: d98e9235159c6315808ef32647d70744
+SHA256: 02032744b14bed667a89d3b079372dc6f5befa3b39a156c063a5afe98e2c509b
 
 Package: sdl2_image
 Version: 2.8.2
@@ -458,9 +472,9 @@ Description: sdl2_image package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2_image/sdl2_image_2.8.2_aarch64.deb
-Size: 90292
-MD5sum: f92e9f3b3c1700126908cc104d62e68c
-SHA256: af72f09847172be239f3b1e1f8e4d6d685d3e1d7316d259ddc573be3f71673a5
+Size: 90242
+MD5sum: 2df0e77f838e4cb5fd43a028fc6f34b7
+SHA256: d3fe5d0def25d84d604b342a8847a08b63f1cbaabdb836fe8d24e5bde6b9212e
 
 Package: sdl2_mixer
 Version: 2.8.0
@@ -473,9 +487,9 @@ Description: sdl2_mixer package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2_mixer/sdl2_mixer_2.8.0_aarch64.deb
-Size: 61082
-MD5sum: 6f59f2c501cc06447b8be6d8e0676dc0
-SHA256: 2fcfb27b0ba7865025008a84ae8105906230246e1b29da5275ea9083262d0d9a
+Size: 60996
+MD5sum: ea262e42812a80e23836e654313000ca
+SHA256: 452caaa0d45ffeee67d9ad325b4caca91a47b6e6d6dcbaaf366ad9fbc053ea21
 
 Package: sdl2_ttf
 Version: 2.22.0
@@ -488,9 +502,9 @@ Description: sdl2_ttf package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sdl2_ttf/sdl2_ttf_2.22.0_aarch64.deb
-Size: 329738
-MD5sum: 4c9fcc3d7c4cac4d82cb9122e96db813
-SHA256: 5ee3f0d0167c769ddf0a01d1d3a6a0fbe61547c37d52b089f3151fbe2b6a22f2
+Size: 329826
+MD5sum: a370a656089d9c44b78d057aab8694c8
+SHA256: 90753c438e4872218c2291188cc6da77c9c5840ac7ad0db6e1d09d001fe0b4af
 
 Package: sqlite
 Version: 3.46.1
@@ -502,23 +516,9 @@ Description: sqlite package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/s/sqlite/sqlite_3.46.1_aarch64.deb
-Size: 1049486
-MD5sum: 42ca6d220a8f91c0113eb0188afecd90
-SHA256: 9bba6cbb96149e763a8e446bdcc733e4850d7b00674292931daf0e9f6c13d648
-
-Package: toybox
-Version: 0.8.12
-Architecture: aarch64
-Maintainer: haisa-des <noreply@haisa-des.local>
-Installed-Size: 540
-Priority: optional
-Description: toybox package
- .
- Built by haisa-des-bootstrap CI.
-Filename: pool/main/t/toybox/toybox_0.8.12_aarch64.deb
-Size: 263352
-MD5sum: ace6bc812034b2c208120f1c7cfff4e7
-SHA256: 4d9f6246b2808b2db61e340e66d73ba4a17bf1dc07be186ce88987c076f2b414
+Size: 1049410
+MD5sum: 6acde48b4d76f70056707f58830fe2d5
+SHA256: 7aeb7cc273e214a35997c8ce280e9599a9db5de8508a7e12bfd36ca2dbee5af0
 
 Package: xxhash
 Version: 0.8.3
@@ -530,9 +530,9 @@ Description: xxhash package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/x/xxhash/xxhash_0.8.3_aarch64.deb
-Size: 70994
-MD5sum: c5fadb45f4c050c9142002d89f5b90d9
-SHA256: dd82ea11670a438897a12b90d44952a4905c216cf66ac9af02d0459b5ac8cb25
+Size: 70986
+MD5sum: 1c7b903873f6a10e2077eae8a2de515f
+SHA256: 9d54b101b6ecdffe035338c53e79159fc14fbedb832c499d8ca7882f48933bd9
 
 Package: xz
 Version: 5.6.2
@@ -544,9 +544,9 @@ Description: xz package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/x/xz/xz_5.6.2_aarch64.deb
-Size: 196556
-MD5sum: 34234c1ec12547787a2a91324cfa4532
-SHA256: 3e8da0d4c654a5df1893d73f404e9e80243a5840a835a9b1a0d944b2cec330fa
+Size: 196530
+MD5sum: 2f6915416bacfc2169f7bfe4a7841c01
+SHA256: 47aa0bd974e4003a03b4e4548b46873b212aa8abc61852d5afb3b5db59a2fe26
 
 Package: zlib
 Version: 1.3.1
@@ -558,9 +558,9 @@ Description: zlib package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/z/zlib/zlib_1.3.1_aarch64.deb
-Size: 83196
-MD5sum: a563b5511e45cf7f96a7febb9dd11e89
-SHA256: bfd41da0a14724be8faefc3b926c8f33801e139efc6330c9284fbe33e0187a9a
+Size: 83310
+MD5sum: e15e0b681f67994c7b0c9c64b3986162
+SHA256: 5ad1f2d79cdcbc43d2a5d306cd082928b03eb43ef7e640afd421c634448e281a
 
 Package: zstd
 Version: 1.5.7
@@ -572,6 +572,6 @@ Description: zstd package
  .
  Built by haisa-des-bootstrap CI.
 Filename: pool/main/z/zstd/zstd_1.5.7_aarch64.deb
-Size: 303350
-MD5sum: fc7af417617221975b619d057257560b
-SHA256: bac6080136be271d7717accf3212f8ac7b103a066ec18964fd71ea5c405d0aca
+Size: 303110
+MD5sum: 79519fda72f28838d0e0301981da7ca9
+SHA256: aabe6072aeb7718a99ddbec818e19c5596d6a8ff76a2826e488f4148a3046515
